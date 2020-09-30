@@ -48,7 +48,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Аккаунт успешно зарегистрирован', 'status' => 'success', 'token' => $token, 'user_data' => $user], 200);
         } catch (\Exception $e) {
             if ($e->getCode() == 23000) {
-                return response()->json(['message' => 'Ошибка: такой Email уже существует', 'status' => 'error'], 401);
+                return response()->json(['message' => 'такой Email уже существует', 'status' => 'error'], 401);
             }
         }
     }
