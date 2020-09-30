@@ -15,8 +15,8 @@ class CreateTableForGamesAndUsers extends Migration
     {
         Schema::create('games_and_users', function (Blueprint $table) {
             $table->id();
-            $table->foreign('game_id')->references('id')->on('games');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->bigInteger('game_id');
+            $table->bigInteger('user_id');
             $table->string('player_id');
             $table->string('player_name');
             $table->integer('matches');
@@ -34,6 +34,6 @@ class CreateTableForGamesAndUsers extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_for_games_and_users');
+        Schema::dropIfExists('games_and_users');
     }
 }
