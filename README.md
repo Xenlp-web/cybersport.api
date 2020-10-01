@@ -1,7 +1,8 @@
 # Cybersport API
-## Пользователи
 
 Все ответы возвращаются в JSON с такими общими полями, как: message, status. При успешном выполнении status = "success", при неуспешном status = "error". В поле message можно получить подробное сообщение об ошибке и об успешном выполнении запроса.
+
+## Пользователи
 
 **Вход** - POST https://domen.com/api/login (Аргументы: email, password) 
 - Возвращает {message, status, token, user_data}
