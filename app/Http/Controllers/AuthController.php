@@ -47,6 +47,7 @@ class AuthController extends Controller
             $token = $user->createToken('access_token')->accessToken;
 
             $user->referal_code = self::genRefCode();
+            $user->email_confirmation_code = self::genMailConfirmationCode();
             $user->save();
 
             return response()->json(['message' => 'Аккаунт успешно зарегистрирован', 'status' => 'success', 'token' => $token, 'user_data' => $user], 200);
@@ -67,5 +68,11 @@ class AuthController extends Controller
             }
         }
         return $refCode;
+    }
+
+    public function genMailConfirmationCode() {
+        $code = substr(str_shuffle('123456789abcdefghijklmnpqrstuvwxyz'), 0, 6);
+        $hashed_code = md5($code);
+        return $hashed_code;
     }
 }
