@@ -25,6 +25,10 @@ Route::get('getAllGames', 'App\Http\Controllers\GamesController@getAllGames');
 // Price
 Route::get('getTicketPrice', 'App\Http\Controllers\TicketPriceController@getPrice');
 
+// Chat
+Route::get('getGlobalChatMessages', 'App\Http\Controllers\ChatController@getGlobalChatMessages');
+Route::post('sendMessageToGlobalChat', 'App\Http\Controllers\ChatController@sendMessageToGlobalChat');
+
 // Errors
 Route::get('errorUnauthorized', function() {
     return response()->json(['message' => 'Не авторизован', 'status' => 'error'], 401);
