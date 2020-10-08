@@ -2,6 +2,8 @@
 
 Все ответы возвращаются в JSON с такими общими полями, как: message, status. При успешном выполнении status = "success", при неуспешном status = "error". В поле message можно получить подробное сообщение об ошибке и об успешном выполнении запроса.
 
+В некоторых запросах необходимо передавать токен аутентификации в хедере (Authorization: Bearer {token}) - такие запросы будут помечены ключевым словом **AUTH**
+
 ## Пользователи
 
 **Вход** - POST https://domen.com/api/login (Аргументы: email, password) 
@@ -23,4 +25,13 @@ ____
 **Получить цену на билеты** - GET https://domen.com/api/getTicketPrice (Необязательный аргумент **count**. Если указан - выдаст цену на **count** шт. билетов)
 - Возвращает {message, status, price}.
 - price - цена
+____
+
+## Чат
+**Получить последние 100 сообщений из глобального чата** - GET https://domen.com/api/getGlobalChatMessages (Нет аргументов)
+- Возвращает {message, status, **messages**}
+- messages - массив с сообщениями в чате
+
+**Отправить сообщение в глобальный чат** - POST https://domen.com/api/sendMessageToGlobalChat **AUTH** (Аргументы: message, user_id)
+- Возвращает {message, status}
 ____
