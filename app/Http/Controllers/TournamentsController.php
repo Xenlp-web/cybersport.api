@@ -31,17 +31,18 @@ class TournamentsController extends Controller
             $game_id = $record->game_id;
             $tickets = $options['tickets'];
             $start_time = $record->time;
+            $region = $record->region;
 
             $newTournament = [
                 'title' => $title,
                 'game_id' => $game_id,
                 'tickets' => $tickets,
                 'img' => $img,
-                'start_time' => $start_time
+                'start_time' => $start_time,
+                'region' => $region
             ];
 
             $options['lobby_pass'] = substr(str_shuffle('123456789abcdefghijklmnpqrstuvwxyz'), 0, 8);
-            $newTournamentOptions = $options;
 
             if (!self::createNewTournament($newTournament, $options ,$gameSlug)) {
                 return false;
