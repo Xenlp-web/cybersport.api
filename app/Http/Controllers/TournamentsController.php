@@ -21,6 +21,36 @@ class TournamentsController extends Controller
         }
     }
 
+    public function createTounamentByAdmin(Request $request) {
+        $game_id = $request->get('game_id');
+        $title = $request->get('title');
+        $tickets = $request->get('tickets');
+        $img = $request->get('img');
+        $start_time = $request->get('start_time');
+        $region = $request->get('region');
+        $options = $request->get('options');
+
+        $newTournament = [
+            'title' => $title,
+            'game_id' => $game_id,
+            'tickets' => $tickets,
+            'img' => $img,
+            'start_time' => $start_time,
+            'region' => $region
+        ];
+
+        try {
+            $game = GamesController::getGameById($game_id);
+            $gameSlug = $game->slug;
+            if (!is_array($options)) throw new \Exception('Не указаны опции для турнира');
+            if (!self::createNewTournament($newTournament, $options, $gameSlug)) throw new \Exception("Ошибка при создании турнира");
+
+            return response()->json(['message' => 'Турнир создан', 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
+
     public function createAutoTournamentsBySchedule() {
         $schedule = DB::table('auto_options_schedule')->select('game_id', 'option_id', 'day_of_week', 'time')->distinct()->get();
         if (empty($schedule)) return false;
@@ -44,6 +74,8 @@ class TournamentsController extends Controller
             $tickets = $options['tickets'];
             $start_time = $record->time;
             $region = $record->region;
+            $title;
+            $img;
 
             $newTournament = [
                 'title' => $title,
@@ -54,9 +86,12 @@ class TournamentsController extends Controller
                 'region' => $region
             ];
 
+            $map;
+            $pov;
+
             $options['lobby_pass'] = substr(str_shuffle('123456789abcdefghijklmnpqrstuvwxyz'), 0, 8);
 
-            if (!self::createNewTournament($newTournament, $options ,$gameSlug)) {
+            if (!self::createNewTournament($newTournament, $options, $gameSlug)) {
                 return false;
             };
         }
@@ -66,12 +101,7 @@ class TournamentsController extends Controller
     private static function createNewTournament(Array $newTournament, Array $newTournamentOptions, String $gameSlug) {
         $tournamentsInfoTable = $gameSlug.'_tournaments_info';
 
-        //TODO: Разобраться с пустыми переменными
-        $title;
-        $img;
         $tournament_id = DB::table('tournaments')->insertGetId($newTournament);
-        $map;
-        $pov;
         $newTournamentOptions['tournament_id'] = $tournament_id;
         if (DB::table($tournamentsInfoTable)->insert($newTournamentOptions)) {
             return true;
