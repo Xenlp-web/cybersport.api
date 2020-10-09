@@ -35,3 +35,8 @@ ____
 **Отправить сообщение в глобальный чат** - POST https://domen.com/api/sendMessageToGlobalChat **AUTH** (Аргументы: message, user_name)
 - Возвращает {message, status}
 ____
+
+## Турниры
+**Получить турниры для определенной игры** - GET https://domen.com/api/getTournamentsByGame (Аргументы: game_id)
+- Возвращает {message, status, tournaments}
+- tournaments - массив турниров
