@@ -22,27 +22,14 @@ class TournamentsController extends Controller
     }
 
     public function createTounamentByAdmin(Request $request) {
-        $game_id = $request->get('game_id');
-        $title = $request->get('title');
-        $tickets = $request->get('tickets');
-        $img = $request->get('img');
-        $start_time = $request->get('start_time');
-        $region = $request->get('region');
+        $newTournament = $request->get('new_tournament');
         $options = $request->get('options');
-
-        $newTournament = [
-            'title' => $title,
-            'game_id' => $game_id,
-            'tickets' => $tickets,
-            'img' => $img,
-            'start_time' => $start_time,
-            'region' => $region
-        ];
+        $game_id = $newTournament['game_id'];
 
         try {
             $game = GamesController::getGameById($game_id);
             $gameSlug = $game->slug;
-            if (!is_array($options)) throw new \Exception('Не указаны опции для турнира');
+            if (!is_array($options) || !is_array($newTournament)) throw new \Exception('Не указаны опции для турнира');
             if (!self::createNewTournament($newTournament, $options, $gameSlug)) throw new \Exception("Ошибка при создании турнира");
 
             return response()->json(['message' => 'Турнир создан', 'status' => 'success'], 200);
