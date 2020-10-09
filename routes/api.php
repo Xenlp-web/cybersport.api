@@ -27,7 +27,7 @@ Route::get('getTicketPrice', 'App\Http\Controllers\TicketPriceController@getPric
 
 // Chat
 Route::get('getGlobalChatMessages', 'App\Http\Controllers\ChatController@getGlobalChatMessages');
-Route::post('sendMessageToGlobalChat', 'App\Http\Controllers\ChatController@sendMessageToGlobalChat');
+Route::middleware('auth:api')->post('sendMessageToGlobalChat', 'App\Http\Controllers\ChatController@sendMessageToGlobalChat');
 
 // Errors
 Route::get('errorUnauthorized', function() {
