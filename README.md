@@ -40,3 +40,8 @@ ____
 **Получить турниры для определенной игры** - GET https://domen.com/api/getTournamentsByGame (Аргументы: game_id)
 - Возвращает {message, status, tournaments}
 - tournaments - массив турниров
+
+**Добавить новый турнир вручную будучи администратором** - POST https://domen.com/api/createTounamentByAdmin **AUTH** (Аргументы: new_tournament, options, user_id)
+- Возвращает {message, status}
+- new_tournament - массив, содержащий title, game_id, tickets, img, start_time, region
+- options - массив, содержащий дополнительную информацию о турнире, основываясь на игре (Например для pubg: map, mode, pov, max_players, winners, placement_award, kill_award, mvp_award, lobby_pass)
