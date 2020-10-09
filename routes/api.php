@@ -29,6 +29,9 @@ Route::get('getTicketPrice', 'App\Http\Controllers\TicketPriceController@getPric
 Route::get('getGlobalChatMessages', 'App\Http\Controllers\ChatController@getGlobalChatMessages');
 Route::middleware('auth:api')->post('sendMessageToGlobalChat', 'App\Http\Controllers\ChatController@sendMessageToGlobalChat');
 
+// Tournaments
+Route::get('getTournamentsByGame', 'App\Http\Controllers\TournamentsController@getTournamentsByGame');
+
 // Errors
 Route::get('errorUnauthorized', function() {
     return response()->json(['message' => 'Не авторизован', 'status' => 'error'], 401);

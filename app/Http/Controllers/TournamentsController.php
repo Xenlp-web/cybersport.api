@@ -9,6 +9,18 @@ use App\Http\Controllers\GamesController;
 
 class TournamentsController extends Controller
 {
+    public function getTournamentsByGame(Request $request) {
+        try {
+            if (!$request->has('game_id')) throw new \Exception("Нет id игры");
+            $game_id = $request->get('game_id');
+            $tournaments = Tournaments::where('game_id', $game_id)->get();
+            if (count($tournaments) < 1) throw new \Exception("Нет турниров");
+            return response()->json(['message' => 'Турниры найдены', 'tournaments' => $tournaments, 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
+
     public function createAutoTournamentsBySchedule() {
         $schedule = DB::table('auto_options_schedule')->select('game_id', 'option_id', 'day_of_week', 'time')->distinct()->get();
         if (empty($schedule)) return false;
