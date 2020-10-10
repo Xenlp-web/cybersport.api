@@ -61,8 +61,14 @@ class TournamentsController extends Controller
             $tickets = $options['tickets'];
             $start_time = $record->time;
             $region = $record->region;
-            $title;
-            $img;
+            $map = DB::table('game_maps')->select('name')->where('game_id', $game_id)->inRandomOrder()->first();
+
+            $titleDict = array('азартный', 'безжалостный', 'безумный', 'беспощадный', 'бурный', 'грандиозный', 'грозный', 'дикий', 'дремучий', 'дьявольский', 'жесточайший',
+            'матерый', 'незабываемый', 'неистовый', 'пьянящий', 'райский', 'смертельный', 'триумфальный', 'убийственный', 'ужасающий',
+            'экстремальный', 'яркий', 'яростный');
+
+            $title = array_rand($titleDict, 1) . ' ' . $map;
+            $img = DB::table('tournaments_covers')->select('name')->where('game_id', $game_id)->inRandomOrder()->first();
 
             $newTournament = [
                 'title' => $title,
@@ -73,10 +79,11 @@ class TournamentsController extends Controller
                 'region' => $region
             ];
 
-            $map;
-            $pov;
+
+            //TODO: сделать метод для добавления настроек авто-турниров (сделать pov генерирующимся)
 
             $options['lobby_pass'] = substr(str_shuffle('123456789abcdefghijklmnpqrstuvwxyz'), 0, 8);
+            $options['map'] = $map;
 
             if (!self::createNewTournament($newTournament, $options, $gameSlug)) {
                 return false;
