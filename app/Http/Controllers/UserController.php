@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Tournaments;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -24,6 +26,34 @@ class UserController extends Controller
             if (!is_array($userInfo)) throw new \Exception('user_info не массив');
             User::where('id', $userInfo['id'])->update($userInfo);
             return response()->json(['message' => 'Информация пользователя успешно изменена', 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
+
+    public function joinTournament(Request $request) {
+        $userId = $request->get('user_id');
+        $tournamentId = $request->get('tournament_id');
+        $gameId = $request->get('game_id');
+        try {
+            $tournamentTickets = Tournaments::select('tickets')->where('id', $tournamentId)->where('ended', 0)->firstOrFail();
+            $user = User::where('id', $userId)->firstOrFail();
+
+            if ($user->tickets < $tournamentTickets) throw new \Exception("Недостаточно билетов");
+
+            DB::table('tournaments_and_users')->insert(['user_id' => $userId, 'tournament_id' => $tournamentId]);
+            $game = GamesController::getGameById($gameId);
+            $gameSlug = $game->slug;
+            $tournInfoTable = $gameSlug.'_tournaments_info';
+
+            $players = DB::table($tournInfoTable)->select('current_players', 'max_players')->where('tournament_id', $tournamentId)->firstOrFail();
+            if ($players->current_players >= $players->max_players) throw new \Exception("Недостаточно мест");
+
+            DB::table($tournInfoTable)->where('tournament_id', $tournamentId)->update(['current_players' => $players->current_players + 1]);
+
+            $user->tickets = $user->tickets - $tournamentTickets;
+            $user->save();
+            return response()->json(['message' => 'Запись на турнир прошла успешно', 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
         }

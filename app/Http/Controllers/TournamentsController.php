@@ -121,6 +121,15 @@ class TournamentsController extends Controller
         return true;
     }
 
+
+
+
+
+
+
+
+
+
     private static function createNewTournament(Array $newTournament, Array $newTournamentOptions, String $gameSlug) {
         $tournamentsInfoTable = $gameSlug.'_tournaments_info';
 
