@@ -14,9 +14,15 @@
 **Регистрация** - POST https://domen.com/api/login (Аргументы: email, password, password_confirm)
 - Возвращает {message, status, token, user_data}
 
-**Редактировать информацию пользователя** - POST https://domen.com/api/changeUserInfo **AUTH ADMIN** (Аргументы: user_info)
+**Редактировать информацию пользователя** - POST https://domen.com/api/changeUserInfoByAdmin **AUTH ADMIN** (Аргументы: user_info)
 - Возвращает {message, status}
 - user_info - ассоциативный массив с данными пользователя
+
+**Записаться на турнир** - POST https://domen.com/api/joinTournament **AUTH** (Аргументы: user_id, tournament_id, game_id)
+- Возвращает {message, status}
+- user_id - id пользователя
+- tournament_id - id турнира
+- game_id - id игры
 ____
 
 ## Игры
