@@ -17,4 +17,15 @@ class UserController extends Controller
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
         }
     }
+
+    public function changeUserInfoByAdmin(Request $request) {
+        $userInfo = $request->get('user_info');
+        try {
+            if (!is_array($userInfo)) throw new \Exception('user_info не массив');
+            User::where('id', $userInfo['id'])->update($userInfo);
+            return response()->json(['message' => 'Информация пользователя успешно изменена', 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
 }
