@@ -53,5 +53,5 @@ ____
     Структура для PUBG: 
     [
         tournament_options => [mode, tickets, kill_award, mvp_award, max_players, placement_award, winners], 
-        schedule_options => [game_id, day_of_week(Цифра от 0 до 6, где 0 это воскресенье), time(формат 24ч), region] 
+        schedule_options => [day_of_week(Цифра от 0 до 6, где 0 это воскресенье), time(формат 24ч), region] 
     ]
