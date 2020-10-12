@@ -41,7 +41,17 @@ ____
 - Возвращает {message, status, tournaments}
 - tournaments - массив турниров
 
-**Добавить новый турнир вручную будучи администратором** - POST https://domen.com/api/createTounamentByAdmin **AUTH** (Аргументы: new_tournament, options, user_id)
+**Добавить новый турнир вручную будучи администратором** - POST https://domen.com/api/createTounamentByAdmin **AUTH ADMIN** (Аргументы: new_tournament, options, user_id)
 - Возвращает {message, status}
 - new_tournament - массив, содержащий title, game_id, tickets, img, start_time, region
 - options - массив, содержащий дополнительную информацию о турнире, основываясь на игре (Например для pubg: map, mode, pov, max_players, winners, placement_award, kill_award, mvp_award, lobby_pass)
+
+**Добавить настройки для автотурнира** POST https://domen.com/api/saveAutoTournOptions **AUTH ADMIN** (Аргументы: game_id, options)
+- Возвращает {message, status}
+- game_id - id игры, для которой применяются настройки
+- options - многомерный массив. 
+    Структура для PUBG: 
+    [
+        tournament_options => [mode, tickets, kill_award, mvp_award, max_players, placement_award, winners], 
+        schedule_options => [game_id, day_of_week(Цифра от 0 до 6, где 0 это воскресенье), time(формат 24ч), region] 
+    ]
