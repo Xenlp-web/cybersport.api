@@ -17,7 +17,7 @@ class GamesController extends Controller
         }
     }
 
-    public function getGameById($id) {
+    public static function getGameById($id) {
         try {
             $game = Games::where('id', $id)->first();
             return $game;
