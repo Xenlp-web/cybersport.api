@@ -29,10 +29,42 @@ class TournamentsController extends Controller
         try {
             $game = GamesController::getGameById($game_id);
             $gameSlug = $game->slug;
-            if (!is_array($options) || !is_array($newTournament)) throw new \Exception('Не указаны опции для турнира');
+            if (!is_array($options) || !is_array($newTournament)) throw new \Exception('Options должны быть массивом');
             if (!self::createNewTournament($newTournament, $options, $gameSlug)) throw new \Exception("Ошибка при создании турнира");
 
             return response()->json(['message' => 'Турнир создан', 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
+
+    public function saveAutoTournOptions(Request $request) {
+        $options = $request->get('options');
+        $gameId = $request->get('game_id');
+        try {
+            if (!is_array($options)) throw new \Exception('Options должны быть массивом');
+            $game = GamesController::getGameById($gameId);
+            $gameSlug = $game->slug;
+            $optionsTable = $gameSlug.'_auto_tourn_options';
+
+            switch ($gameId) {
+                case '1': //pubg
+                    foreach ($options['options'] as $option) {
+                        $pov = ['tpp', 'fpp'];
+                        $option['tournament_options']['pov'] = array_rand($pov, 1);
+                        if (!DB::table($optionsTable)->updateOrInsert(['mode' => $option['tournament_options']['mode']], $option['tournament_options'])) throw new \Exception("Ошибка записи в БД");
+                        $optionId = DB::table($optionsTable)->select('id')->where('mode', $option['tournament_options']['mode'])->first();
+                        if ($optionId === null) throw new \Exception("Ошибка получения option_id");
+                        $option['schedule_options']['option_id'] = $optionId;
+                        $option['schedule_options']['game_id'] = $gameId;
+                        if (!DB::table('auto_options_schedule')->updateOrInsert(['option_id' => $optionId, 'game_id' => $gameId], $option['schedule_options'])) throw new \Exception("Ошибка записи очереди в БД");
+                    }
+                    break;
+                default:
+                    throw new \Exception('Игра не найдена');
+                    break;
+            }
+            return response()->json(['message' => 'Настройки успешно сохранены', 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
         }
@@ -78,9 +110,6 @@ class TournamentsController extends Controller
                 'start_time' => $start_time,
                 'region' => $region
             ];
-
-
-            //TODO: сделать метод для добавления настроек авто-турниров (сделать pov генерирующимся)
 
             $options['lobby_pass'] = substr(str_shuffle('123456789abcdefghijklmnpqrstuvwxyz'), 0, 8);
             $options['map'] = $map;

@@ -32,6 +32,7 @@ Route::middleware('auth:api')->post('sendMessageToGlobalChat', 'App\Http\Control
 // Tournaments
 Route::get('getTournamentsByGame', 'App\Http\Controllers\TournamentsController@getTournamentsByGame');
 Route::middleware('auth:api', 'admin_rights')->post('createTounamentByAdmin', 'App\Http\Controllers\TournamentsController@createTounamentByAdmin');
+Route::middleware('auth:api', 'admin_rights')->post('createTounamentByAdmin', 'App\Http\Controllers\TournamentsController@saveAutoTournOptions');
 
 // Errors
 Route::get('errorUnauthorized', function() {
