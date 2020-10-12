@@ -19,6 +19,7 @@ Route::post('login', 'App\Http\Controllers\AuthController@login');
 Route::post('register', 'App\Http\Controllers\AuthController@register');
 Route::get('getUserInfo', 'App\Http\Controllers\UserController@getUserInfo');
 Route::middleware('auth:api', 'admin_rights')->post('changeUserInfoByAdmin', 'App\Http\Controllers\UserController@changeUserInfo');
+Route::middleware('auth:api')->post('joinTournament', 'App\Http\Controllers\UserController@joinTournament');
 
 // Games
 Route::get('getAllGames', 'App\Http\Controllers\GamesController@getAllGames');
