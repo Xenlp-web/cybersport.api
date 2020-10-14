@@ -79,4 +79,20 @@ class UserController extends Controller
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
         }
     }
+
+    public function addGameInfo(Request $request) {
+        (int) $userId = $request->get('user_id');
+        (int) $gameId = $request->get('game_id');
+        (array) $gameInfo = $request->get('game_info');
+        $gameInfo['user_id'] = $userId;
+        try {
+            $game = GamesController::getGameById($gameId);
+            $gameSlug = $game->slug;
+            $tableName = $gameSlug . '_info';
+            DB::table($tableName)->updateOrInsert(['user_id' => $userId], $gameInfo);
+            return response()->json(['message' => 'Информация успешно добавлена', 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
 }
