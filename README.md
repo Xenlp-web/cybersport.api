@@ -14,25 +14,22 @@
 **Регистрация** - POST https://domen.com/api/login (Аргументы: email, password, password_confirm)
 - Возвращает {message, status, token, user_data}
 
-**Редактировать информацию пользователя** - POST https://domen.com/api/changeUserInfoByAdmin **AUTH ADMIN** (Аргументы: user_info)
+**Редактировать информацию пользователя администратором** - POST https://domen.com/api/changeUserInfoByAdmin **AUTH ADMIN** (Аргументы: user_info)
 - Возвращает {message, status}
 - user_info - ассоциативный массив с данными пользователя
 
-**Записаться на турнир** - POST https://domen.com/api/joinTournament **AUTH** (Аргументы: user_id, tournament_id, game_id)
+**Записаться на турнир** - POST https://domen.com/api/joinTournament **AUTH** (Аргументы: tournament_id, game_id)
 - Возвращает {message, status}
-- user_id - id пользователя
 - tournament_id - id турнира
 - game_id - id игры
 
-**Отменить запись на турнир** - POST https://domen.com/api/cancelTournamentParticipation **AUTH** (Аргументы: user_id, tournament_id, game_id)
+**Отменить запись на турнир** - POST https://domen.com/api/cancelTournamentParticipation **AUTH** (Аргументы: tournament_id, game_id)
 - Возвращает {message, status}
-- user_id - id пользователя
 - tournament_id - id турнира
 - game_id - id игры
 
-**Добавить информацию для игры** - POST https://domen.com/api/addGameInfo **AUTH** (Аргументы: user_id, game_id, game_info)
+**Добавить информацию для игры** - POST https://domen.com/api/addGameInfo **AUTH** (Аргументы: game_id, game_info)
 - Возвращает {message, status}
-- user_id - id пользователя
 - game_id - id игры
 - game_info - массив с данными для игры
 ____
@@ -63,7 +60,7 @@ ____
 - Возвращает {message, status, tournaments}
 - tournaments - массив турниров
 
-**Добавить новый турнир вручную будучи администратором** - POST https://domen.com/api/createTounamentByAdmin **AUTH ADMIN** (Аргументы: new_tournament, options, user_id)
+**Добавить новый турнир вручную будучи администратором** - POST https://domen.com/api/createTounamentByAdmin **AUTH ADMIN** (Аргументы: new_tournament, options)
 - Возвращает {message, status}
 - new_tournament - массив, содержащий title, game_id, tickets, img, start_time, region
 - options - массив, содержащий дополнительную информацию о турнире, основываясь на игре (Например для pubg: map, mode, pov, max_players, winners, placement_award, kill_award, mvp_award, lobby_pass)
