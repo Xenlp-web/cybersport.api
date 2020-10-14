@@ -23,6 +23,18 @@
 - user_id - id пользователя
 - tournament_id - id турнира
 - game_id - id игры
+
+**Отменить запись на турнир** - POST https://domen.com/api/cancelTournamentParticipation **AUTH** (Аргументы: user_id, tournament_id, game_id)
+- Возвращает {message, status}
+- user_id - id пользователя
+- tournament_id - id турнира
+- game_id - id игры
+
+**Добавить информацию для игры** - POST https://domen.com/api/addGameInfo **AUTH** (Аргументы: user_id, game_id, game_info)
+- Возвращает {message, status}
+- user_id - id пользователя
+- game_id - id игры
+- game_info - массив с данными для игры
 ____
 
 ## Игры
