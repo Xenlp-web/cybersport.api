@@ -22,6 +22,7 @@ Route::middleware('auth:api', 'admin_rights')->post('changeUserInfoByAdmin', 'Ap
 Route::middleware('auth:api', 'game_info_fullness')->post('joinTournament', 'App\Http\Controllers\UserController@joinTournament');
 Route::middleware('auth:api', 'participation')->post('cancelTournamentParticipation', 'App\Http\Controllers\UserController@cancelTournamentParticipation');
 Route::middleware('auth:api')->post('addGameInfo', 'App\Http\Controllers\UserController@addGameInfo');
+Route::middleware('auth:api')->post('changeUserInfo', 'App\Http\Controllers\UserController@changeUserInfo');
 
 // Games
 Route::get('getAllGames', 'App\Http\Controllers\GamesController@getAllGames');

@@ -18,7 +18,7 @@ class GameInfoFullness
      */
     public function handle(Request $request, Closure $next)
     {
-        $userId = $request->get('user_id');
+        $userId = Auth::id();
         $gameId = $request->get('game_id');
         $game = GamesController::getGameById($gameId);
         $gameSlug = $game->slug;

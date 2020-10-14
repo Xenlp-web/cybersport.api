@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Tournaments;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -35,12 +36,12 @@ class UserController extends Controller
     }
 
     public function joinTournament(Request $request) {
-        (int) $userId = $request->get('user_id');
+        (int) $userId = Auth::id();
         (int) $tournamentId = $request->get('tournament_id');
         (int) $gameId = $request->get('game_id');
         try {
             $tournamentTickets = Tournaments::select('tickets')->where('id', $tournamentId)->where('ended', '0')->firstOrFail();
-            $user = User::where('id', $userId)->firstOrFail();
+            $user = Auth::user();
 
             if ($user->tickets < $tournamentTickets) throw new \Exception("Недостаточно билетов");
 
@@ -63,7 +64,7 @@ class UserController extends Controller
     }
 
     public function cancelTournamentParticipation(Request $request) {
-        (int) $userId = $request->get('user_id');
+        (int) $userId = Auth::id();
         (int) $tournamentId = $request->get('tournament_id');
         (int) $gameId = $request->get('game_id');
         try {
@@ -74,7 +75,7 @@ class UserController extends Controller
             $tournInfoTable = $gameSlug.'_tournaments_info';
             $players = DB::table($tournInfoTable)->pluck('current_players')->where('tournament_id', $tournamentId);
             DB::table($tournInfoTable)->where('tournament_id', $tournamentId)->update(['current_players' => $players->current_players - 1]);
-            $user = User::where('id', $userId)->firstOrFail();
+            $user = Auth::user();
             $user->tickets = $user->tickets + $tournamentTickets;
             $user->save();
             return response()->json(['message' => 'Участие в турнире отменено', 'status' => 'success'], 200);
@@ -84,7 +85,7 @@ class UserController extends Controller
     }
 
     public function addGameInfo(Request $request) {
-        (int) $userId = $request->get('user_id');
+        (int) $userId = Auth::id();
         (int) $gameId = $request->get('game_id');
         (array) $gameInfo = $request->get('game_info');
         $gameInfo['user_id'] = $userId;
@@ -94,6 +95,16 @@ class UserController extends Controller
             $tableName = $gameSlug . '_info';
             DB::table($tableName)->updateOrInsert(['user_id' => $userId], $gameInfo);
             return response()->json(['message' => 'Информация успешно добавлена', 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
+
+    public function changeUserInfo(Request $request) {
+        $user = Auth::user();
+        try {
+            $user->update($request->get('user_info'));
+            return response()->json(['message' => 'Информация успешно обновлена', 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
         }
