@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
     public function getUserInfo(Request $request) {
+        $this->validate($request, [
+            'email' => 'required|email'
+        ]);
+
         $email = $request->get('email');
         try {
             $user = User::where('email', $email)->first();
@@ -21,9 +25,8 @@ class UserController extends Controller
     }
 
     public function changeUserInfoByAdmin(Request $request) {
-        $userInfo = $request->get('user_info');
+        (array) $userInfo = $request->get('user_info');
         try {
-            if (!is_array($userInfo)) throw new \Exception('user_info не массив');
             User::where('id', $userInfo['id'])->update($userInfo);
             return response()->json(['message' => 'Информация пользователя успешно изменена', 'status' => 'success'], 200);
         } catch (\Exception $e) {
@@ -32,11 +35,11 @@ class UserController extends Controller
     }
 
     public function joinTournament(Request $request) {
-        $userId = $request->get('user_id');
-        $tournamentId = $request->get('tournament_id');
-        $gameId = $request->get('game_id');
+        (int) $userId = $request->get('user_id');
+        (int) $tournamentId = $request->get('tournament_id');
+        (int) $gameId = $request->get('game_id');
         try {
-            $tournamentTickets = Tournaments::select('tickets')->where('id', $tournamentId)->where('ended', 0)->firstOrFail();
+            $tournamentTickets = Tournaments::select('tickets')->where('id', $tournamentId)->where('ended', '0')->firstOrFail();
             $user = User::where('id', $userId)->firstOrFail();
 
             if ($user->tickets < $tournamentTickets) throw new \Exception("Недостаточно билетов");
@@ -60,9 +63,9 @@ class UserController extends Controller
     }
 
     public function cancelTournamentParticipation(Request $request) {
-        $userId = $request->get('user_id');
-        $tournamentId = $request->get('tournament_id');
-        $gameId = $request->get('game_id');
+        (int) $userId = $request->get('user_id');
+        (int) $tournamentId = $request->get('tournament_id');
+        (int) $gameId = $request->get('game_id');
         try {
             DB::table('tournaments_and_users')->where('user_id', $userId)->where('tournament_id', $tournamentId)->delete();
             $tournamentTickets = Tournaments::select('tickets')->where('id', $tournamentId)->where('ended', 0)->firstOrFail();
