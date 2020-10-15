@@ -79,5 +79,9 @@ ____
 - Возвращает {message, status}
 - tournament_id - id турнира
 - game_id - id игры
-- tournament_common_info - массив с общей информацией для турниров (пример: title, game_id, tickets, img, start_time, ended, important, stream, region)
-- tournament_info_by_game - массив с информацией для турнира по конкретной игре (пример с pubg: tournament_id, map, mode, pov, current_players, max_players, winners, placement_award, kill_award, mvp_award, lobby_id, lobby_pass)
+- tournament_common_info - массив с общей информацией для турниров (пример: title, game_id, tickets, img, start_time, ended, important, stream, region, lobby_id, lobby_pass)
+- tournament_info_by_game - массив с информацией для турнира по конкретной игре (пример с pubg: tournament_id, map, mode, pov, current_players, max_players, winners, placement_award, kill_award, mvp_award)
+
+**Получить информацию для входа в лобби** - POST https://domen.com/api/getLobbyInfo **AUTH** (Аргументы: tournament_id)
+- Возвращает {message, lobby_info, status} lobby_info - массив с данными для входа
+- tournament_id - id турнира
