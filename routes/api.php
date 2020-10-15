@@ -3,17 +3,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
 // Users
 Route::post('login', 'App\Http\Controllers\AuthController@login');
 Route::post('register', 'App\Http\Controllers\AuthController@register');
@@ -36,8 +25,9 @@ Route::middleware('auth:api')->post('sendMessageToGlobalChat', 'App\Http\Control
 
 // Tournaments
 Route::get('getTournamentsByGame', 'App\Http\Controllers\TournamentsController@getTournamentsByGame');
-Route::middleware('auth:api', 'admin_rights')->post('createTounamentByAdmin', 'App\Http\Controllers\TournamentsController@createTounamentByAdmin');
-Route::middleware('auth:api', 'admin_rights')->post('createTounamentByAdmin', 'App\Http\Controllers\TournamentsController@saveAutoTournOptions');
+Route::middleware('auth:api', 'admin_rights')->post('createTournamentByAdmin', 'App\Http\Controllers\TournamentsController@createTournamentByAdmin');
+Route::middleware('auth:api', 'admin_rights')->post('saveAutoTournOptions', 'App\Http\Controllers\TournamentsController@saveAutoTournOptions');
+Route::middleware('auth:api', 'admin_rights')->post('editTournamentInfo', 'App\Http\Controllers\TournamentsController@editTournamentInfo');
 
 // Errors
 Route::get('errorUnauthorized', function() {

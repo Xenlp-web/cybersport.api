@@ -21,7 +21,7 @@ class TournamentsController extends Controller
         }
     }
 
-    public function createTounamentByAdmin(Request $request) {
+    public function createTournamentByAdmin(Request $request) {
         $newTournament = $request->get('new_tournament');
         $options = $request->get('options');
         $game_id = $newTournament['game_id'];
@@ -121,8 +121,26 @@ class TournamentsController extends Controller
         return true;
     }
 
+    public function editTournamentInfo(Request $request) {
+        (int) $tournamentId = $request->get('tournament_id');
+        (int) $gameId = $request->get('game_id');
+        (array) $tournamentCommonInfo = $request->get('tournament_common_info');
+        (array) $tournamentInfoByGame = $request->get('tournament_info_by_game');
+        try {
+            $game = GamesController::getGameById($gameId);
+            $gameSlug = $game->slug;
+            $tableForGame = $gameSlug.'_tournaments_info';
+            $tournamentInfoByGame['tournament_id'] = $tournamentId;
 
+            $tournament = Tournaments::where('id', $tournamentId);
+            $tournament->update($tournamentCommonInfo);
 
+            DB::table($tableForGame)->where('tournament_id', $tournamentId)->update($tournamentCommonInfo);
+            return response()->json(['message' => 'Изменения успешно сохранены', 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
 
 
 
