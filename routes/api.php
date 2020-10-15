@@ -28,6 +28,7 @@ Route::get('getTournamentsByGame', 'App\Http\Controllers\TournamentsController@g
 Route::middleware('auth:api', 'admin_rights')->post('createTournamentByAdmin', 'App\Http\Controllers\TournamentsController@createTournamentByAdmin');
 Route::middleware('auth:api', 'admin_rights')->post('saveAutoTournOptions', 'App\Http\Controllers\TournamentsController@saveAutoTournOptions');
 Route::middleware('auth:api', 'admin_rights')->post('editTournamentInfo', 'App\Http\Controllers\TournamentsController@editTournamentInfo');
+Route::middleware('auth:api', 'participation')->post('getLobbyInfo', 'App\Http\Controllers\TournamentsController@getLobbyInfo');
 
 // Errors
 Route::get('errorUnauthorized', function() {

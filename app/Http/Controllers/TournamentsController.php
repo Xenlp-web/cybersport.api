@@ -142,7 +142,16 @@ class TournamentsController extends Controller
         }
     }
 
-
+    public function getLobbyInfo(Request $request) {
+        (int) $tournamentId = $request->get('tournament_id');
+        try {
+            $lobbyInfo = Tournaments::select('lobby_id', 'lobby_pass')->where('id', $tournamentId)->makeVisible(['lobby_id', 'lobby_pass']);
+            $lobbyInfo = ['lobby_id' => $lobbyInfo->lobby_id, 'lobby_pass' => $lobbyInfo->lobby_pass];
+            return response()->json(['message' => 'Данные для лобби получены', 'lobby_info' => $lobbyInfo, 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
 
 
 
