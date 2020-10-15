@@ -74,3 +74,10 @@ ____
         tournament_options => [mode, tickets, kill_award, mvp_award, max_players, placement_award, winners], 
         schedule_options => [day_of_week(Цифра от 0 до 6, где 0 это воскресенье), time(формат 24ч), region] 
     ]
+
+**Редактировать турнир** POST https://domen.com/api/editTournamentInfo **AUTH ADMIN** (Аргументы: tournament_id, game_id, tournament_common_info, tournament_info_by_game)
+- Возвращает {message, status}
+- tournament_id - id турнира
+- game_id - id игры
+- tournament_common_info - массив с общей информацией для турниров (пример: title, game_id, tickets, img, start_time, ended, important, stream, region)
+- tournament_info_by_game - массив с информацией для турнира по конкретной игре (пример с pubg: tournament_id, map, mode, pov, current_players, max_players, winners, placement_award, kill_award, mvp_award, lobby_id, lobby_pass)
