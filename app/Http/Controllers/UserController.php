@@ -26,7 +26,10 @@ class UserController extends Controller
     }
 
     public function changeUserInfoByAdmin(Request $request) {
-        (array) $userInfo = $request->get('user_info');
+        $this->validate($request, [
+            'user_info' => 'required|array'
+        ]);
+        $userInfo = $request->get('user_info');
         try {
             User::where('id', $userInfo['id'])->update($userInfo);
             return response()->json(['message' => 'Информация пользователя успешно изменена', 'status' => 'success'], 200);
@@ -36,9 +39,14 @@ class UserController extends Controller
     }
 
     public function joinTournament(Request $request) {
-        (int) $userId = Auth::id();
-        (int) $tournamentId = $request->get('tournament_id');
-        (int) $gameId = $request->get('game_id');
+        $this->validate($request, [
+            'tournament_id' => 'required|integer',
+            'game_id' => 'required|integer'
+        ]);
+
+        $userId = Auth::id();
+        $tournamentId = $request->get('tournament_id');
+        $gameId = $request->get('game_id');
         try {
             $tournamentTickets = Tournaments::select('tickets')->where('id', $tournamentId)->where('ended', '0')->firstOrFail();
             $user = Auth::user();
@@ -64,9 +72,14 @@ class UserController extends Controller
     }
 
     public function cancelTournamentParticipation(Request $request) {
-        (int) $userId = Auth::id();
-        (int) $tournamentId = $request->get('tournament_id');
-        (int) $gameId = $request->get('game_id');
+        $this->validate($request, [
+            'tournament_id' => 'required|integer',
+            'game_id' => 'required|integer'
+        ]);
+
+        $userId = Auth::id();
+        $tournamentId = $request->get('tournament_id');
+        $gameId = $request->get('game_id');
         try {
             DB::table('tournaments_and_users')->where('user_id', $userId)->where('tournament_id', $tournamentId)->delete();
             $tournamentTickets = Tournaments::select('tickets')->where('id', $tournamentId)->where('ended', 0)->firstOrFail();
@@ -85,9 +98,14 @@ class UserController extends Controller
     }
 
     public function addGameInfo(Request $request) {
-        (int) $userId = Auth::id();
-        (int) $gameId = $request->get('game_id');
-        (array) $gameInfo = $request->get('game_info');
+        $this->validate($request, [
+            'game_id' => 'required|integer',
+            'game_info' => 'required|array'
+        ]);
+
+        $userId = Auth::id();
+        $gameId = $request->get('game_id');
+        $gameInfo = $request->get('game_info');
         $gameInfo['user_id'] = $userId;
         try {
             $game = GamesController::getGameById($gameId);
@@ -101,6 +119,10 @@ class UserController extends Controller
     }
 
     public function changeUserInfo(Request $request) {
+        $this->validate($request, [
+            'user_info' => 'required|array'
+        ]);
+
         $user = Auth::user();
         try {
             $user->update($request->get('user_info'));

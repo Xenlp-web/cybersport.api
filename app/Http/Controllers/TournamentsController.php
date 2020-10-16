@@ -10,8 +10,10 @@ use App\Http\Controllers\GamesController;
 class TournamentsController extends Controller
 {
     public function getTournamentsByGame(Request $request) {
+        $this->validate($request, [
+            'game_id' => 'required|integer'
+        ]);
         try {
-            if (!$request->has('game_id')) throw new \Exception("Нет id игры");
             $game_id = $request->get('game_id');
             $tournaments = Tournaments::where('game_id', $game_id)->get();
             if (count($tournaments) < 1) throw new \Exception("Нет турниров");
@@ -22,6 +24,12 @@ class TournamentsController extends Controller
     }
 
     public function createTournamentByAdmin(Request $request) {
+        $this->validate($request, [
+            'new_tournament' => 'required|array',
+            'options' => 'required|array',
+            'game_id' => 'required|integer'
+        ]);
+
         $newTournament = $request->get('new_tournament');
         $options = $request->get('options');
         $game_id = $newTournament['game_id'];
@@ -29,9 +37,7 @@ class TournamentsController extends Controller
         try {
             $game = GamesController::getGameById($game_id);
             $gameSlug = $game->slug;
-            if (!is_array($options) || !is_array($newTournament)) throw new \Exception('Options должны быть массивом');
             if (!self::createNewTournament($newTournament, $options, $gameSlug)) throw new \Exception("Ошибка при создании турнира");
-
             return response()->json(['message' => 'Турнир создан', 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
@@ -39,10 +45,14 @@ class TournamentsController extends Controller
     }
 
     public function saveAutoTournOptions(Request $request) {
+        $this->validate($request, [
+            'options' => 'required|array',
+            'game_id' => 'required|integer'
+        ]);
+
         $options = $request->get('options');
         $gameId = $request->get('game_id');
         try {
-            if (!is_array($options)) throw new \Exception('Options должны быть массивом');
             $game = GamesController::getGameById($gameId);
             $gameSlug = $game->slug;
             $optionsTable = $gameSlug.'_auto_tourn_options';
@@ -122,10 +132,18 @@ class TournamentsController extends Controller
     }
 
     public function editTournamentInfo(Request $request) {
-        (int) $tournamentId = $request->get('tournament_id');
-        (int) $gameId = $request->get('game_id');
-        (array) $tournamentCommonInfo = $request->get('tournament_common_info');
-        (array) $tournamentInfoByGame = $request->get('tournament_info_by_game');
+        $this->validate($request, [
+            'tournament_id' => 'required|integer',
+            'game_id' => 'required|integer',
+            'tournament_common_info' => 'required|array',
+            'tournament_info_by_game' => 'required|array'
+        ]);
+
+        $tournamentId = $request->get('tournament_id');
+        $gameId = $request->get('game_id');
+        $tournamentCommonInfo = $request->get('tournament_common_info');
+        $tournamentInfoByGame = $request->get('tournament_info_by_game');
+
         try {
             $game = GamesController::getGameById($gameId);
             $gameSlug = $game->slug;
@@ -143,7 +161,11 @@ class TournamentsController extends Controller
     }
 
     public function getLobbyInfo(Request $request) {
-        (int) $tournamentId = $request->get('tournament_id');
+        $this->validate($request, [
+            'tournament_id' => 'required|integer'
+        ]);
+
+        $tournamentId = $request->get('tournament_id');
         try {
             $lobbyInfo = Tournaments::select('lobby_id', 'lobby_pass')->where('id', $tournamentId)->makeVisible(['lobby_id', 'lobby_pass']);
             $lobbyInfo = ['lobby_id' => $lobbyInfo->lobby_id, 'lobby_pass' => $lobbyInfo->lobby_pass];
@@ -157,7 +179,7 @@ class TournamentsController extends Controller
 
 
 
-    private static function createNewTournament(Array $newTournament, Array $newTournamentOptions, String $gameSlug) {
+    private static function createNewTournament(array $newTournament, array $newTournamentOptions, string $gameSlug) {
         $tournamentsInfoTable = $gameSlug.'_tournaments_info';
 
         $tournament_id = DB::table('tournaments')->insertGetId($newTournament);

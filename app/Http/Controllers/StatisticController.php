@@ -15,9 +15,9 @@ class StatisticController extends Controller
             'period' => 'string'
         ]);
 
-        (int) $gameId = $request->get('game_id');
-        (string) $statItem = $request->get('stat_item');
-        (string) $period = 'all';
+        $gameId = $request->get('game_id');
+        $statItem = $request->get('stat_item');
+        $period = 'all';
 
         if ($request->has('period')) $period = $request->get('period');
 

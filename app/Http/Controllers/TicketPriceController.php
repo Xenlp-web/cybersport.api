@@ -8,6 +8,10 @@ use App\Models\TicketPrice;
 class TicketPriceController extends Controller
 {
     public function getPrice(Request $request) {
+        $this->validate($request, [
+            'count' => 'required|integer'
+        ]);
+
         try {
             $price = TicketPrice::all();
             if ($request->get('count')) {
