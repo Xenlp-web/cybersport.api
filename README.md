@@ -11,7 +11,7 @@
 - token - токен доступа для пользователя. Лучше сохранить его в local storage или в redux.
 - user_data - объект с данными пользователя (id, email, team_id, coins, coins_bonus, tickets, referal_code, coins_from_referals, confirmed_email, email_confirmation_code, banned).
 
-**Регистрация** - POST https://domen.com/api/login (Аргументы: email, password, password_confirm)
+**Регистрация** - POST https://domen.com/api/register (Аргументы: email, password, password_confirm)
 - Возвращает {message, status, token, user_data}
 
 **Редактировать информацию пользователя администратором** - POST https://domen.com/api/changeUserInfoByAdmin **AUTH ADMIN** (Аргументы: user_info)
