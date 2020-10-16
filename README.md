@@ -85,3 +85,12 @@ ____
 **Получить информацию для входа в лобби** - POST https://domen.com/api/getLobbyInfo **AUTH** (Аргументы: tournament_id)
 - Возвращает {message, lobby_info, status} lobby_info - массив с данными для входа
 - tournament_id - id турнира
+
+____
+
+## Статистика
+**Получить статистику игроков** - GET https://domen.com/api/getStatisticForPlayers (Аргументы: game_id, stat_item, period = 'all')
+- Возвращает {message, status, statistic}
+- game_id - id игры
+- stat_item - критерий выбора статистики (для pubg можно выбрать: earnings, kills, placements, tournaments)
+- period (необязательный параметр) - определяет за какой период выбирать статистику (возможные варианты: day, month, week)
