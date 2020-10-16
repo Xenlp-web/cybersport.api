@@ -25,7 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email', 'pubg_id', 'pubg_name', 'password', 'team_id', 'coins', 'coins_bonus', 'tickets', 'referal_code', 'coins_from_referals', 'rating', 'kills', 'deaths', 'matches', 'confirmed_email', 'banned'
+        'email', 'password', 'team_id', 'coins', 'coins_bonus', 'tickets', 'referal_code', 'coins_from_referals', 'rating', 'kills', 'deaths', 'matches', 'confirmed_email', 'banned'
     ];
 
     /**
@@ -35,6 +35,10 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+    ];
+
+    protected $guarded = [
+        'banned'
     ];
 
     /**

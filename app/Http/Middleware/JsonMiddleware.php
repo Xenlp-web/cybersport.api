@@ -4,10 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
-class CheckAdminRights
+class JsonMiddleware
 {
     /**
      * Handle an incoming request.
@@ -18,8 +16,7 @@ class CheckAdminRights
      */
     public function handle(Request $request, Closure $next)
     {
-        $user = Auth::user();
-        if ($user->is_admin != 1) return response()->json(['message' => 'У вас нет прав администратора', 'status' => 'error'], 400);
+        $request->headers->set('Accept', 'application/json');
         return $next($request);
     }
 }

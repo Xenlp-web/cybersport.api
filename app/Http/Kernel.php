@@ -42,6 +42,7 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\JsonMiddleware::class,
         ],
     ];
 
@@ -63,5 +64,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin_rights' => \App\Http\Middleware\CheckAdminRights::class,
+        'participation' => \App\Http\Middleware\CheckParticipation::class,
+        'game_info_fullness' => \App\Http\Middleware\GameInfoFullness::class,
     ];
 }

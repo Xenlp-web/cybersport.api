@@ -18,8 +18,12 @@ class ChatController extends Controller
     }
 
     public function sendMessageToGlobalChat(Request $request) {
+        $this->validate($request, [
+            'user_name' => 'required',
+            'message' => 'required'
+        ]);
+
         try {
-            if (!$request->has('user_name')) throw new \Exception("Нет имени пользователя");
             $user_name = $request->get('user_name');
             $message = $request->get('message');
             if (!GlobalChat::create(['message' => $message, 'user_name' => $user_name])) throw new \Exception("Ошибка при отправке сообщения");
