@@ -30,6 +30,9 @@ Route::middleware('auth:api', 'admin_rights')->post('saveAutoTournOptions', 'App
 Route::middleware('auth:api', 'admin_rights')->post('editTournamentInfo', 'App\Http\Controllers\TournamentsController@editTournamentInfo');
 Route::middleware('auth:api', 'participation')->post('getLobbyInfo', 'App\Http\Controllers\TournamentsController@getLobbyInfo');
 
+// Statistic
+Route::get('getStatisticForPlayers', 'App\Http\Controllers\StatisticController@getStatisticForPlayers');
+
 // Errors
 Route::get('errorUnauthorized', function() {
     return response()->json(['message' => 'Не авторизован', 'status' => 'error'], 401);
