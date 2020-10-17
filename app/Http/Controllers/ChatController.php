@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\GlobalChat;
+use App\Exceptions\ValidationException;
+use Illuminate\Support\Facades\Validator;
 
 class ChatController extends Controller
 {
@@ -18,10 +20,14 @@ class ChatController extends Controller
     }
 
     public function sendMessageToGlobalChat(Request $request) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'user_name' => 'required',
             'message' => 'required'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
 
         try {
             $user_name = $request->get('user_name');

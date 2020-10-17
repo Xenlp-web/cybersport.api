@@ -5,15 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\GamesController;
+use App\Exceptions\ValidationException;
+use Illuminate\Support\Facades\Validator;
 
 class StatisticController extends Controller
 {
     public function getStatisticForPlayers(Request $request) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'game_id' => 'required|integer',
             'stat_item' => 'required|string',
             'period' => 'string'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
 
         $gameId = $request->get('game_id');
         $statItem = $request->get('stat_item');

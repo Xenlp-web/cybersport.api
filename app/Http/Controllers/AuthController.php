@@ -6,15 +6,26 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Exceptions\ValidationException;
+use Illuminate\Support\Facades\Validator;
+
 
 class AuthController extends Controller
 {
+    protected function failedValidation($validator) {
+        throw new ValidationException($validator);
+    }
+
     public function login(Request $request)
     {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
 
         $email = $request->input('email');
         $password = $request->input('password');
@@ -29,11 +40,15 @@ class AuthController extends Controller
 
 
     public function register(Request $request) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',
             'password_confirm' => 'required|same:password'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
 
         if ($request->input('password') != $request->input('password_confirm'))
             return response()->json(['message' => 'Пароли не совпадают', 'status' => 'error'], 401);
