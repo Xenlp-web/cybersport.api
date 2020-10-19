@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    protected function failedValidation($validator) {
+        throw new ValidationException($validator);
+    }
+
     public function getUserInfo(Request $request) {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email'

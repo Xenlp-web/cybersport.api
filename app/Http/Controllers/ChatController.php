@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Validator;
 
 class ChatController extends Controller
 {
+    protected function failedValidation($validator) {
+        throw new ValidationException($validator);
+    }
+
     public function getGlobalChatMessages() {
         try {
             $messages = GlobalChat::orderBy('id', 'desc')->take(100)->get()->reverse();

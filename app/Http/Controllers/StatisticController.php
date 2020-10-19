@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Validator;
 
 class StatisticController extends Controller
 {
+
+    protected function failedValidation($validator) {
+        throw new ValidationException($validator);
+    }
+
     public function getStatisticForPlayers(Request $request) {
         $validator = Validator::make($request->all(), [
             'game_id' => 'required|integer',

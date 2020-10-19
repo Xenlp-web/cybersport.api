@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Validator;
 
 class TicketPriceController extends Controller
 {
+    protected function failedValidation($validator) {
+        throw new ValidationException($validator);
+    }
+
     public function getPrice(Request $request) {
         $validator = Validator::make($request->all(), [
             'count' => 'required|integer'

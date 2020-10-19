@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Validator;
 
 class TournamentsController extends Controller
 {
+    protected function failedValidation($validator) {
+        throw new ValidationException($validator);
+    }
+
     public function getTournamentsByGame(Request $request) {
         $validator = Validator::make($request->all(), [
             'game_id' => 'required|integer'
@@ -198,6 +202,19 @@ class TournamentsController extends Controller
         }
     }
 
+    /* public function saveResult(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'tournament_id' => 'required|integer',
+            'tournament_results' => 'required|array'
+        ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+
+        $tournamentId = $request->get('tournament_id');
+        $tournamentResults = $request->get('tournament_results');
+    } */
 
 
 
