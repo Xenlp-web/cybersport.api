@@ -35,6 +35,9 @@ Route::middleware('auth:api', 'participation')->post('getLobbyInfo', 'App\Http\C
 // Statistic
 Route::get('getStatisticForPlayers', 'App\Http\Controllers\StatisticController@getStatisticForPlayers');
 
+//Regions
+Route::get('getAllRegions', 'App\Http\Controllers\RegionsController@getAll');
+
 // Errors
 Route::get('errorUnauthorized', function() {
     return response()->json(['message' => 'Не авторизован', 'status' => 'error'], 401);
