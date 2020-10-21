@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Exceptions\ValidationException;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ConfirmationCode;
 
 class UserController extends Controller
 {
@@ -158,6 +160,20 @@ class UserController extends Controller
         try {
             $user->update($request->get('user_info'));
             return response()->json(['message' => 'Информация успешно обновлена', 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
+
+    public function sendNewEmailConfirmationCode() {
+        try {
+            $user = Auth::user();
+            $auth = new AuthController;
+            $newConfirmationCode = $auth->genMailConfirmationCode();
+            $user->email_confirmation_code = $newConfirmationCode;
+            $user->save();
+            Mail::to($user)->send(new ConfirmationCode($user->email_confirmation_code));
+            return response()->json(['message' => 'Новый код подтверждения отправлен', 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
         }
