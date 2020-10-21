@@ -12,6 +12,8 @@ Route::middleware('auth:api', 'game_info_fullness')->post('joinTournament', 'App
 Route::middleware('auth:api', 'participation')->post('cancelTournamentParticipation', 'App\Http\Controllers\UserController@cancelTournamentParticipation');
 Route::middleware('auth:api')->post('addGameInfo', 'App\Http\Controllers\UserController@addGameInfo');
 Route::middleware('auth:api')->post('changeUserInfo', 'App\Http\Controllers\UserController@changeUserInfo');
+Route::middleware('auth:api')->post('sendNewEmailConfirmationCode', 'App\Http\Controllers\UserController@sendNewEmailConfirmationCode');
+Route::middleware('auth:api')->post('confirmEmail', 'App\Http\Controllers\UserController@confirmEmail');
 
 // Games
 Route::get('getAllGames', 'App\Http\Controllers\GamesController@getAllGames');
@@ -32,6 +34,9 @@ Route::middleware('auth:api', 'participation')->post('getLobbyInfo', 'App\Http\C
 
 // Statistic
 Route::get('getStatisticForPlayers', 'App\Http\Controllers\StatisticController@getStatisticForPlayers');
+
+//Regions
+Route::get('getAllRegions', 'App\Http\Controllers\RegionsController@getAll');
 
 // Errors
 Route::get('errorUnauthorized', function() {

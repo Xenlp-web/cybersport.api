@@ -45,7 +45,8 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',
-            'password_confirm' => 'required|same:password'
+            'password_confirm' => 'required|same:password',
+            'region_id' => 'required|integer'
         ]);
 
         if ($validator->fails()) {
@@ -66,6 +67,7 @@ class AuthController extends Controller
 
             $user->referal_code = self::genRefCode();
             $user->email_confirmation_code = self::genMailConfirmationCode();
+            $user->region = $request->get('region_id');
             $user->save();
             Mail::to($user)->send(new ConfirmationCode($user->email_confirmation_code));
             return response()->json(['message' => 'Аккаунт успешно зарегистрирован', 'status' => 'success', 'token' => $token, 'user_data' => $user], 200);

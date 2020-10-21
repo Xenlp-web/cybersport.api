@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'admin_rights' => \App\Http\Middleware\CheckAdminRights::class,
         'participation' => \App\Http\Middleware\CheckParticipation::class,
         'game_info_fullness' => \App\Http\Middleware\GameInfoFullness::class,
+        'email_confirmed' => \App\Http\Middleware\EmailConfirmed::class,
     ];
 }
