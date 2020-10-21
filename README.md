@@ -32,6 +32,13 @@
 - Возвращает {message, status}
 - game_id - id игры
 - game_info - массив с данными для игры
+
+**Отправить новый код подтверждения** - POST https://domen.com/api/sendNewEmailConfirmationCode **AUTH** (Аргументов нет)
+- Возвращает {message, status}
+
+**Подтвердить email** - POST https://domen.com/api/confirmEmail **AUTH** (Аргументы: confirmation_code)
+- Возвращает {message, status}
+- confirmation_code - код подтверждения введенный пользователем
 ____
 
 ## Игры
