@@ -4,13 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TicketPrice;
+use App\Exceptions\ValidationException;
+use Illuminate\Support\Facades\Validator;
 
 class TicketPriceController extends Controller
 {
+    protected function failedValidation($validator) {
+        throw new ValidationException($validator);
+    }
+
     public function getPrice(Request $request) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'count' => 'required|integer'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
 
         try {
             $price = TicketPrice::all();

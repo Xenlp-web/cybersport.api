@@ -7,13 +7,23 @@ use App\Models\User;
 use App\Models\Tournaments;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Exceptions\ValidationException;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    protected function failedValidation($validator) {
+        throw new ValidationException($validator);
+    }
+
     public function getUserInfo(Request $request) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
 
         $email = $request->get('email');
         try {
@@ -26,9 +36,14 @@ class UserController extends Controller
     }
 
     public function changeUserInfoByAdmin(Request $request) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'user_info' => 'required|array'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+
         $userInfo = $request->get('user_info');
         try {
             User::where('id', $userInfo['id'])->update($userInfo);
@@ -39,10 +54,14 @@ class UserController extends Controller
     }
 
     public function joinTournament(Request $request) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'tournament_id' => 'required|integer',
             'game_id' => 'required|integer'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
 
         $userId = Auth::id();
         $tournamentId = $request->get('tournament_id');
@@ -72,10 +91,14 @@ class UserController extends Controller
     }
 
     public function cancelTournamentParticipation(Request $request) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'tournament_id' => 'required|integer',
             'game_id' => 'required|integer'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
 
         $userId = Auth::id();
         $tournamentId = $request->get('tournament_id');
@@ -98,10 +121,14 @@ class UserController extends Controller
     }
 
     public function addGameInfo(Request $request) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'game_id' => 'required|integer',
             'game_info' => 'required|array'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
 
         $userId = Auth::id();
         $gameId = $request->get('game_id');
@@ -119,9 +146,13 @@ class UserController extends Controller
     }
 
     public function changeUserInfo(Request $request) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'user_info' => 'required|array'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
 
         $user = Auth::user();
         try {

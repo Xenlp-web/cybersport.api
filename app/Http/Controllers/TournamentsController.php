@@ -6,13 +6,24 @@ use Illuminate\Http\Request;
 use App\Models\Tournaments;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\GamesController;
+use App\Exceptions\ValidationException;
+use Illuminate\Support\Facades\Validator;
 
 class TournamentsController extends Controller
 {
+    protected function failedValidation($validator) {
+        throw new ValidationException($validator);
+    }
+
     public function getTournamentsByGame(Request $request) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'game_id' => 'required|integer'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+
         try {
             $game_id = $request->get('game_id');
             $tournaments = Tournaments::where('game_id', $game_id)->get();
@@ -24,11 +35,15 @@ class TournamentsController extends Controller
     }
 
     public function createTournamentByAdmin(Request $request) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'new_tournament' => 'required|array',
             'options' => 'required|array',
             'game_id' => 'required|integer'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
 
         $newTournament = $request->get('new_tournament');
         $options = $request->get('options');
@@ -45,10 +60,14 @@ class TournamentsController extends Controller
     }
 
     public function saveAutoTournOptions(Request $request) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'options' => 'required|array',
             'game_id' => 'required|integer'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
 
         $options = $request->get('options');
         $gameId = $request->get('game_id');
@@ -132,12 +151,16 @@ class TournamentsController extends Controller
     }
 
     public function editTournamentInfo(Request $request) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'tournament_id' => 'required|integer',
             'game_id' => 'required|integer',
             'tournament_common_info' => 'required|array',
             'tournament_info_by_game' => 'required|array'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
 
         $tournamentId = $request->get('tournament_id');
         $gameId = $request->get('game_id');
@@ -161,9 +184,13 @@ class TournamentsController extends Controller
     }
 
     public function getLobbyInfo(Request $request) {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'tournament_id' => 'required|integer'
         ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
 
         $tournamentId = $request->get('tournament_id');
         try {
@@ -175,6 +202,19 @@ class TournamentsController extends Controller
         }
     }
 
+    /* public function saveResult(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'tournament_id' => 'required|integer',
+            'tournament_results' => 'required|array'
+        ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+
+        $tournamentId = $request->get('tournament_id');
+        $tournamentResults = $request->get('tournament_results');
+    } */
 
 
 
