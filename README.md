@@ -101,3 +101,10 @@ ____
 - game_id - id игры
 - stat_item - критерий выбора статистики (для pubg можно выбрать: earnings, kills, placements, tournaments)
 - period (необязательный параметр) - определяет за какой период выбирать статистику (возможные варианты: day, month, week)
+
+____
+
+## Регионы
+**Получить список всех регионов** - GET https://domen.com/api/getAllRegions (Аргументов нет)
+- Возвращает {message, status, regions}
+- regions - массив объектов регионов. Пример объекта: {"id": 1, "region": "ru"}
