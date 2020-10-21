@@ -13,6 +13,7 @@ Route::middleware('auth:api', 'participation')->post('cancelTournamentParticipat
 Route::middleware('auth:api')->post('addGameInfo', 'App\Http\Controllers\UserController@addGameInfo');
 Route::middleware('auth:api')->post('changeUserInfo', 'App\Http\Controllers\UserController@changeUserInfo');
 Route::middleware('auth:api')->post('sendNewEmailConfirmationCode', 'App\Http\Controllers\UserController@sendNewEmailConfirmationCode');
+Route::middleware('auth:api')->post('confirmEmail', 'App\Http\Controllers\UserController@confirmEmail');
 
 // Games
 Route::get('getAllGames', 'App\Http\Controllers\GamesController@getAllGames');

@@ -178,4 +178,25 @@ class UserController extends Controller
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
         }
     }
+
+    public function confirmEmail(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'confirmation_code' => 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+
+        $user = Auth::user();
+        $confirmationCode = strtolower($request->get('confirmation_code'));
+        try {
+            if ($confirmationCode != $user->email_confirmation_code) throw new \Exception("Неверный код подтверждения");
+            $user->confirmed_email = '1';
+            $user->save();
+            return response()->json(['message' => 'Почта успешно подтверждена', 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
 }
