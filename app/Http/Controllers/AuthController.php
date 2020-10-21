@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\ValidationException;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ConfirmationCode;
 
 
 class AuthController extends Controller
@@ -65,7 +67,7 @@ class AuthController extends Controller
             $user->referal_code = self::genRefCode();
             $user->email_confirmation_code = self::genMailConfirmationCode();
             $user->save();
-
+            Mail::to($user)->send(new ConfirmationCode($user->email_confirmation_code));
             return response()->json(['message' => 'Аккаунт успешно зарегистрирован', 'status' => 'success', 'token' => $token, 'user_data' => $user], 200);
         } catch (\Exception $e) {
             if ($e->getCode() == 23000) {
@@ -88,7 +90,6 @@ class AuthController extends Controller
 
     public function genMailConfirmationCode() {
         $code = substr(str_shuffle('123456789abcdefghijklmnpqrstuvwxyz'), 0, 6);
-        $hashed_code = md5($code);
-        return $hashed_code;
+        return $code;
     }
 }

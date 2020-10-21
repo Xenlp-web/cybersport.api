@@ -62,6 +62,18 @@ class StatisticController extends Controller
         }
     }
 
+    /* public function saveStatistic(array $statistic, int $gameId) {
+        $validator = Validator::make($statistic, [
+            'game_id' => 'required|integer',
+            'stat_item' => 'required|string',
+            'period' => 'string'
+        ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+    } */
+
     protected function getStatTable(int $gameId) {
         $game = GamesController::getGameById($gameId);
         if (!$game) return false;
