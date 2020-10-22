@@ -284,9 +284,10 @@ class TournamentsController extends Controller
                         'tournaments' => 1
                     ];
                 }
-
                 StatisticController::saveStatistic($statistic, $gameId);
             }
+            $tournament->ended = 1;
+            $tournament->save();
             return response()->json(['message' => 'Результаты турнира успешно сохранены', 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
