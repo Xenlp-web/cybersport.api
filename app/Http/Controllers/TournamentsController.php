@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\GamesController;
 use App\Exceptions\ValidationException;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 
 class TournamentsController extends Controller
 {
@@ -202,7 +203,7 @@ class TournamentsController extends Controller
         }
     }
 
-    /* public function saveResult(Request $request) {
+    public function saveResult(Request $request) {
         $validator = Validator::make($request->all(), [
             'tournament_id' => 'required|integer',
             'tournament_results' => 'required|array'
@@ -214,7 +215,83 @@ class TournamentsController extends Controller
 
         $tournamentId = $request->get('tournament_id');
         $tournamentResults = $request->get('tournament_results');
-    } */
+
+        try {
+            $tournament = Tournaments::findOrFail($tournamentId);
+            // Считаем цену за участие в турнире
+            $ticketsForTournament = $tournament->tickets;
+            $priceForTicket = DB::table('ticket_prices')->select('price')->where('count', 1)->first();
+            $totalPrice = $ticketsForTournament * $priceForTicket->price;
+
+            // Находим таблицу с данными турнира для нужной игры
+            $gameId = $tournament->game_id;
+            $game = GamesController::getGameById($gameId);
+            $gameSlug = $game->slug;
+            $infoTable = $gameSlug.'_tournaments_info';
+
+            $tournamentInfo = DB::table($infoTable)->where('tournament_id', $tournamentId)->first();
+            $players = $tournamentInfo->current_players;
+            $winners = $tournamentInfo->winners;
+
+            // Считаем призовой фонд
+            $prizeFund = ($players * $totalPrice) * 0.8;
+
+            // Считаем выплату для каждого победителя
+            $payment = $prizeFund/$winners;
+
+            foreach ($tournamentResults as $result) {
+                $userId = $result['user_id'];
+                $placement = $result['placement'];
+                $award = 0;
+                $rating = 0;
+                if ($placement <= $winners) {
+                    $award = $payment;
+                    $rating += 75;
+                }
+
+                $mvp = $result['mvp'];
+
+                DB::table('tournaments_and_users')->where('tournament_id', $tournamentId)->where('user_id', $userId)->update([
+                    'placement' => $placement,
+                    'award' => $award,
+                    'total_rating' => $rating,
+                    'mvp' -> $mvp
+                ]);
+
+                $user = User::find($userId);
+                $user->coins = $user->coins + $award;
+                $user->save();
+
+                if ($gameId == 1) {
+                    $kills = $result['kills'];
+                    $deaths = $result['deaths'];
+                    if ($kills > 0) {
+                        $rating += 25 * $kills;
+                    }
+                    $gameInfo = DB::table('pubg_info')->select('matches', 'kills', 'deaths', 'rating')->where('user_id', $userId)->first();
+                    DB::table('pubg_info')->where('user_id', $userId)->update([
+                        'matches' => $gameInfo->matches + 1,
+                        'kills' => $gameInfo->kills + $kills,
+                        'deaths' => $gameInfo->deaths + $deaths,
+                        'rating' => $gameInfo->rating + $rating
+                    ]);
+
+                    $statistic = [
+                        'user_id' => $userId,
+                        'earnings' => $award,
+                        'kills' => $kills,
+                        'placements' => $placement,
+                        'tournaments' => 1
+                    ];
+                }
+
+                StatisticController::saveStatistic($statistic, $gameId);
+            }
+            return response()->json(['message' => 'Результаты турнира успешно сохранены', 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
 
 
 

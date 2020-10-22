@@ -38,19 +38,19 @@ class StatisticController extends Controller
 
             switch ($period) {
                 case 'day':
-                    $statistic = DB::table($statTable)->select('user_id', $statItem)->where(DB::raw('DAY(created_at)'), date('j', time()))->where(DB::raw('MONTH(created_at)'), date('n', time()))->where(DB::raw('YEAR(created_at)'), date('Y', time()))->get();
+                    $statistic = DB::table($statTable)->select('user_id', DB::raw("SUM($statItem)"))->where(DB::raw('DAY(created_at)'), date('j', time()))->where(DB::raw('MONTH(created_at)'), date('n', time()))->where(DB::raw('YEAR(created_at)'), date('Y', time()))->get();
                     break;
 
                 case 'week':
-                    $statistic = DB::table($statTable)->select('user_id', $statItem)->where(DB::raw('WEEK(created_at)'), date('W', time()))->where(DB::raw('YEAR(created_at)'), date('Y', time()))->get();
+                    $statistic = DB::table($statTable)->select('user_id', DB::raw("SUM($statItem)"))->where(DB::raw('WEEK(created_at)'), date('W', time()))->where(DB::raw('YEAR(created_at)'), date('Y', time()))->get();
                     break;
 
                 case 'month':
-                    $statistic = DB::table($statTable)->select('user_id', $statItem)->where(DB::raw('MONTH(created_at)'), date('n', time()))->where(DB::raw('YEAR(created_at)'), date('Y', time()))->get();
+                    $statistic = DB::table($statTable)->select('user_id', DB::raw("SUM($statItem)"))->where(DB::raw('MONTH(created_at)'), date('n', time()))->where(DB::raw('YEAR(created_at)'), date('Y', time()))->get();
                     break;
 
                 default:
-                    $statistic = DB::table($statTable)->select('user_id', $statItem)->get();
+                    $statistic = DB::table($statTable)->select('user_id', DB::raw("SUM($statItem)"))->get();
                     break;
             }
 
@@ -62,17 +62,10 @@ class StatisticController extends Controller
         }
     }
 
-    /* public function saveStatistic(array $statistic, int $gameId) {
-        $validator = Validator::make($statistic, [
-            'game_id' => 'required|integer',
-            'stat_item' => 'required|string',
-            'period' => 'string'
-        ]);
-
-        if ($validator->fails()) {
-            $this->failedValidation($validator);
-        }
-    } */
+    public static function saveStatistic(array $statistic, int $gameId) {
+        (string) $statTable = $this->getStatTable($gameId);
+        DB::table($statTable)->insert($statistic);
+    }
 
     protected function getStatTable(int $gameId) {
         $game = GamesController::getGameById($gameId);
