@@ -93,6 +93,10 @@ ____
 - Возвращает {message, lobby_info, status} lobby_info - массив с данными для входа
 - tournament_id - id турнира
 
+**Добавить результаты турнира** - POST https://domen.com/api/saveResult **AUTH ADMIN** (Аргументы: tournament_id, tournament_results)
+- Возвращает {message, status}
+- tournament_id - id турнира
+- tournament_results - массив, содержащий массивы с результатами игроков. Пример для PUBG: [user_id, placement (занятое место), mvp(является ли MVP, может быть 1 или 0), kills, deaths].
 ____
 
 ## Статистика
