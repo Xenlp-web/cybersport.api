@@ -38,7 +38,7 @@ class UserController extends Controller
 
     public function getCurrentUserInfo() {
         try {
-            $user = Auth::user();
+            $user = Auth::user()->makeVisible(['coins', 'coins_bonus', 'tickets', 'referal_code', 'coins_from_referals', 'confirmed_email']);
             return response()->json(['message' => 'Информация получена', 'user' => $user, 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
