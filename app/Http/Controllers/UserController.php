@@ -20,18 +20,26 @@ class UserController extends Controller
 
     public function getUserInfo(Request $request) {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email'
+            'user_id' => 'required|integer'
         ]);
 
         if ($validator->fails()) {
             $this->failedValidation($validator);
         }
 
-        $email = $request->get('email');
+        $userId = $request->get('user_id');
         try {
-            $user = User::where('email', $email)->first();
-            if ($user === null) throw new \Exception('Пользователь не найден');
+            $user = User::findOrFail($userId);
             return response()->json(['message' => 'Пользователь найден', 'user' => $user, 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
+
+    public function getCurrentUserInfo() {
+        try {
+            $user = Auth::user()->makeVisible(['coins', 'coins_bonus', 'tickets', 'referal_code', 'coins_from_referals', 'confirmed_email']);
+            return response()->json(['message' => 'Информация получена', 'user' => $user, 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
         }
@@ -195,6 +203,26 @@ class UserController extends Controller
             $user->confirmed_email = '1';
             $user->save();
             return response()->json(['message' => 'Почта успешно подтверждена', 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
+
+    public function uploadAvatar(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|mimes:jpg,png|max:2048'
+        ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+
+        $userId = Auth::id();
+        $file = $request->file('file');
+
+        try {
+            $file->storeAs('public/avatars', $userId.'.'.$file->extension());
+            return response()->json(['message' => 'Аватар успешно загружен', 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
         }

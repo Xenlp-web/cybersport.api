@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', 'App\Http\Controllers\AuthController@login');
 Route::post('register', 'App\Http\Controllers\AuthController@register');
 Route::get('getUserInfo', 'App\Http\Controllers\UserController@getUserInfo');
+Route::middleware('auth:api')->get('getCurrentUserInfo', 'App\Http\Controllers\UserController@getCurrentUserInfo');
 Route::middleware('auth:api', 'admin_rights')->post('changeUserInfoByAdmin', 'App\Http\Controllers\UserController@changeUserInfo');
 Route::middleware('auth:api', 'game_info_fullness')->post('joinTournament', 'App\Http\Controllers\UserController@joinTournament');
 Route::middleware('auth:api', 'participation')->post('cancelTournamentParticipation', 'App\Http\Controllers\UserController@cancelTournamentParticipation');
@@ -14,6 +15,7 @@ Route::middleware('auth:api')->post('addGameInfo', 'App\Http\Controllers\UserCon
 Route::middleware('auth:api')->post('changeUserInfo', 'App\Http\Controllers\UserController@changeUserInfo');
 Route::middleware('auth:api')->post('sendNewEmailConfirmationCode', 'App\Http\Controllers\UserController@sendNewEmailConfirmationCode');
 Route::middleware('auth:api')->post('confirmEmail', 'App\Http\Controllers\UserController@confirmEmail');
+Route::middleware('auth:api')->post('uploadAvatar', 'App\Http\Controllers\UserController@uploadAvatar');
 
 // Games
 Route::get('getAllGames', 'App\Http\Controllers\GamesController@getAllGames');
@@ -31,6 +33,7 @@ Route::middleware('auth:api', 'admin_rights')->post('createTournamentByAdmin', '
 Route::middleware('auth:api', 'admin_rights')->post('saveAutoTournOptions', 'App\Http\Controllers\TournamentsController@saveAutoTournOptions');
 Route::middleware('auth:api', 'admin_rights')->post('editTournamentInfo', 'App\Http\Controllers\TournamentsController@editTournamentInfo');
 Route::middleware('auth:api', 'participation')->post('getLobbyInfo', 'App\Http\Controllers\TournamentsController@getLobbyInfo');
+Route::middleware('auth:api', 'admin_rights')->post('saveResult', 'App\Http\Controllers\TournamentsController@saveResult');
 
 // Statistic
 Route::get('getStatisticForPlayers', 'App\Http\Controllers\StatisticController@getStatisticForPlayers');
