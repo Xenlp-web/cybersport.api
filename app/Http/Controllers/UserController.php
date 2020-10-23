@@ -199,4 +199,24 @@ class UserController extends Controller
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
         }
     }
+
+    public function uploadAvatar(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|mimes:jpg,png|max:2048'
+        ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+
+        $userId = Auth::id();
+        $file = $request->file('file');
+
+        try {
+            $file->storeAs('public/avatars', $userId.'.'.$file->extension());
+            return response()->json(['message' => 'Аватар успешно загружен', 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
 }
