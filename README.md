@@ -14,7 +14,11 @@
 **Регистрация** - POST https://domen.com/api/register (Аргументы: email, password, password_confirm, region_id)
 - Возвращает {message, status, token, user_data}
 
-**Получить информацию о текущем пользователе** - GET https://domen.com/api/getCurrentUserInfo (Аргументов нет)
+**Получить информацию о текущем пользователе** - GET https://domen.com/api/getCurrentUserInfo **AUTH** (Аргументов нет)
+- Возвращает {message, status, user}
+- user - объект с данными пользователя
+
+**Получить информацию о пользователе по id** - GET https://domen.com/api/getUserInfo () (Аргументы: user_id)
 - Возвращает {message, status, user}
 - user - объект с данными пользователя
 
