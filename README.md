@@ -39,6 +39,10 @@
 **Подтвердить email** - POST https://domen.com/api/confirmEmail **AUTH** (Аргументы: confirmation_code)
 - Возвращает {message, status}
 - confirmation_code - код подтверждения введенный пользователем
+
+**Загрузить аватарку** - POST https://domen.com/api/uploadAvatar **AUTH** (Аргументы: file)
+- Возвращает {message, status}
+- file - изображение
 ____
 
 ## Игры
