@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', 'App\Http\Controllers\AuthController@login');
 Route::post('register', 'App\Http\Controllers\AuthController@register');
 Route::get('getUserInfo', 'App\Http\Controllers\UserController@getUserInfo');
+Route::middleware('auth:api')->get('getCurrentUserInfo', 'App\Http\Controllers\UserController@getCurrentUserInfo');
 Route::middleware('auth:api', 'admin_rights')->post('changeUserInfoByAdmin', 'App\Http\Controllers\UserController@changeUserInfo');
 Route::middleware('auth:api', 'game_info_fullness')->post('joinTournament', 'App\Http\Controllers\UserController@joinTournament');
 Route::middleware('auth:api', 'participation')->post('cancelTournamentParticipation', 'App\Http\Controllers\UserController@cancelTournamentParticipation');

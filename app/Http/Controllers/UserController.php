@@ -37,6 +37,15 @@ class UserController extends Controller
         }
     }
 
+    public function getCurrentUserInfo() {
+        try {
+            $user = Auth::user();
+            return response()->json(['message' => 'Информация получена', 'user' => $user, 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
+
     public function changeUserInfoByAdmin(Request $request) {
         $validator = Validator::make($request->all(), [
             'user_info' => 'required|array'
