@@ -34,6 +34,7 @@ Route::middleware('auth:api', 'admin_rights')->post('saveAutoTournOptions', 'App
 Route::middleware('auth:api', 'admin_rights')->post('editTournamentInfo', 'App\Http\Controllers\TournamentsController@editTournamentInfo');
 Route::middleware('auth:api', 'participation')->post('getLobbyInfo', 'App\Http\Controllers\TournamentsController@getLobbyInfo');
 Route::middleware('auth:api', 'admin_rights')->post('saveResult', 'App\Http\Controllers\TournamentsController@saveResult');
+Route::get('getAllStreams', 'App\Http\Controllers\TournamentsController@getAllStreams');
 
 // Statistic
 Route::get('getStatisticForPlayers', 'App\Http\Controllers\StatisticController@getStatisticForPlayers');
