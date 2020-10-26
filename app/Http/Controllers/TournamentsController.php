@@ -294,6 +294,15 @@ class TournamentsController extends Controller
         }
     }
 
+    public function getAllStreams() {
+        try {
+            $streams = Tournaments::select('title', 'stream')->where('ended', 0)->get();
+            if ($streams->isEmpty()) throw new \Exception('Стримы не найдены');
+            return response()->json(['message' => 'Список стримов получен', 'streams' => $streams, 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
 
 
 
