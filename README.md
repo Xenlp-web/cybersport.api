@@ -109,6 +109,10 @@ ____
 - Возвращает {message, status}
 - tournament_id - id турнира
 - tournament_results - массив, содержащий массивы с результатами игроков. Пример для PUBG: [user_id, placement (занятое место), mvp(является ли MVP, может быть 1 или 0), kills, deaths].
+
+**Получить список всех стримов** - GET https://domen.com/api/getAllStreams (Аргументов нет)
+- Возвращает {message, streams, status} lobby_info - массив с данными для входа
+- streams - массив объектов, содержит title (название турнира), stream (ссылка на стрим)
 ____
 
 ## Статистика
