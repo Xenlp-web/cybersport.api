@@ -43,8 +43,9 @@ class AuthController extends Controller
 
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
+            'nickname' => 'required|string|max:32',
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|min:6',
             'password_confirm' => 'required|same:password',
             'region_id' => 'required|integer'
         ]);
@@ -67,6 +68,7 @@ class AuthController extends Controller
 
             $user->referal_code = self::genRefCode();
             $user->email_confirmation_code = self::genMailConfirmationCode();
+            $user->nickname = $request->get('nickname');
             $user->region = $request->get('region_id');
             $user->save();
             Mail::to($user)->send(new ConfirmationCode($user->email_confirmation_code));
