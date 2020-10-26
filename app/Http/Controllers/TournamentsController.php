@@ -100,7 +100,7 @@ class TournamentsController extends Controller
         }
     }
 
-    public function createAutoTournamentsBySchedule() {
+    public static function createAutoTournamentsBySchedule() {
         $schedule = DB::table('auto_options_schedule')->select('game_id', 'option_id', 'day_of_week', 'time')->distinct()->get();
         if (empty($schedule)) return false;
 
