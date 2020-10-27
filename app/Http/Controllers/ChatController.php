@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\GlobalChat;
 use App\Exceptions\ValidationException;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
@@ -25,7 +26,6 @@ class ChatController extends Controller
 
     public function sendMessageToGlobalChat(Request $request) {
         $validator = Validator::make($request->all(), [
-            'user_name' => 'required',
             'message' => 'required'
         ]);
 
@@ -34,9 +34,10 @@ class ChatController extends Controller
         }
 
         try {
-            $user_name = $request->get('user_name');
+            $user = Auth::user();
+            $userName = $user->nickname;
             $message = $request->get('message');
-            if (!GlobalChat::create(['message' => $message, 'user_name' => $user_name])) throw new \Exception("Ошибка при отправке сообщения");
+            if (!GlobalChat::create(['message' => $message, 'user_name' => $userName])) throw new \Exception("Ошибка при отправке сообщения");
             return response()->json(['message' => 'Сообщение отправлено', 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
