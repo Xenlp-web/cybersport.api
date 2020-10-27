@@ -47,7 +47,8 @@ class UserController extends Controller
 
     public function changeUserInfoByAdmin(Request $request) {
         $validator = Validator::make($request->all(), [
-            'user_info' => 'required|array'
+            'user_info' => 'required|array',
+            'user_id' => 'required|integer'
         ]);
 
         if ($validator->fails()) {
@@ -55,8 +56,9 @@ class UserController extends Controller
         }
 
         $userInfo = $request->get('user_info');
+        $userId = $request->get('user_id');
         try {
-            User::where('id', $userInfo['id'])->update($userInfo);
+            User::where('id', $userId)->update($userInfo);
             return response()->json(['message' => 'Информация пользователя успешно изменена', 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
@@ -164,9 +166,10 @@ class UserController extends Controller
             $this->failedValidation($validator);
         }
 
-        $user = Auth::user();
+        $user = Auth::id();
+
         try {
-            $user->update($request->get('user_info'));
+            User::find($user)->update($request->get('user_info'));
             return response()->json(['message' => 'Информация успешно обновлена', 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
