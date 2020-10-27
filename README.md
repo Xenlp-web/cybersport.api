@@ -70,7 +70,7 @@ ____
 - Возвращает {message, status, **messages**}
 - messages - массив с сообщениями в чате
 
-**Отправить сообщение в глобальный чат** - POST https://domen.com/api/sendMessageToGlobalChat **AUTH** (Аргументы: message, user_name)
+**Отправить сообщение в глобальный чат** - POST https://domen.com/api/sendMessageToGlobalChat **AUTH** (Аргументы: message)
 - Возвращает {message, status}
 ____
 
