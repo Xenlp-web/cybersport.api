@@ -22,9 +22,14 @@
 - Возвращает {message, status, user}
 - user - объект с данными пользователя
 
-**Редактировать информацию пользователя администратором** - POST https://domen.com/api/changeUserInfoByAdmin **AUTH ADMIN** (Аргументы: user_info)
+**Редактировать информацию пользователя администратором** - POST https://domen.com/api/changeUserInfoByAdmin **AUTH ADMIN** (Аргументы: user_id, user_info)
 - Возвращает {message, status}
-- user_info - объект с данными пользователя
+- user_id - id пользователя
+- user_info - объект с данными пользователя. Пример {nickname: 'newNickname', email: 'newEmail'}
+
+**Редактировать информацию пользователя** - POST https://domen.com/api/changeUserInfo **AUTH** (Аргументы: user_info)
+- Возвращает {message, status}
+- user_info - объект с данными пользователя. Пример {nickname: 'newNickname', email: 'newEmail'}
 
 **Записаться на турнир** - POST https://domen.com/api/joinTournament **AUTH** (Аргументы: tournament_id, game_id)
 - Возвращает {message, status}
