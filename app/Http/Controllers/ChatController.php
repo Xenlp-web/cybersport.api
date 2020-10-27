@@ -37,7 +37,12 @@ class ChatController extends Controller
             $user = Auth::user();
             $userName = $user->nickname;
             $message = $request->get('message');
-            if (!GlobalChat::create(['message' => $message, 'user_name' => $userName])) throw new \Exception("Ошибка при отправке сообщения");
+
+            $chatMessage = new GlobalChat;
+            $chatMessage->user_name = $userName;
+            $chatMessage->message = $message;
+            $chatMessage->save();
+
             return response()->json(['message' => 'Сообщение отправлено', 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
