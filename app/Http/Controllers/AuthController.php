@@ -58,6 +58,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Пароли не совпадают', 'status' => 'error'], 401);
 
         $newUserArr = [
+            'nickname' => $request->input('nickname'),
             'email' => $request->input('email'),
             'password' => bcrypt($request->input('password'))
         ];
