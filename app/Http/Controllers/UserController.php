@@ -11,6 +11,7 @@ use App\Exceptions\ValidationException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ConfirmationCode;
+use Illuminate\Support\Facades\Redis;
 
 class UserController extends Controller
 {

@@ -7,6 +7,7 @@ use App\Models\GlobalChat;
 use App\Exceptions\ValidationException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use App\Events\MessageToGlobalChatSent;
 
 class ChatController extends Controller
 {
@@ -42,6 +43,8 @@ class ChatController extends Controller
             $chatMessage->user_name = $userName;
             $chatMessage->message = $message;
             $chatMessage->save();
+
+            event(new MessageToGlobalChatSent($chatMessage));
 
             return response()->json(['message' => 'Сообщение отправлено', 'status' => 'success'], 200);
         } catch (\Exception $e) {
