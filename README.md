@@ -84,10 +84,10 @@ ____
 - Возвращает {message, status, tournaments}
 - tournaments - массив турниров, содержащий в себе еще 3 массива: tournamentsToday, tournamentsTommorrow, tournamentsEnded
 
-**Добавить новый турнир вручную будучи администратором** - POST https://domen.com/api/createTounamentByAdmin **AUTH ADMIN** (Аргументы: new_tournament, options)
+**Добавить новый турнир вручную будучи администратором** - POST https://domen.com/api/createTounamentByAdmin **AUTH ADMIN** (Аргументы: new_tournament, options, game_id)
 - Возвращает {message, status}
-- new_tournament - массив, содержащий title, game_id, tickets, img, start_time, region
-- options - массив, содержащий дополнительную информацию о турнире, основываясь на игре (Например для pubg: map, mode, pov, max_players, winners, placement_award, kill_award, mvp_award, lobby_pass)
+- new_tournament - объект, содержащий title, game_id, tickets, img, start_time, region
+- options - объект, содержащий дополнительную информацию о турнире, основываясь на игре (Например для pubg: map, mode, pov, max_players, winners, placement_award, kill_award, mvp_award, lobby_pass)
 
 **Добавить настройки для автотурнира** POST https://domen.com/api/saveAutoTournOptions **AUTH ADMIN** (Аргументы: game_id, options)
 - Возвращает {message, status}
