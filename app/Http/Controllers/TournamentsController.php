@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\GamesController;
 use App\Exceptions\ValidationException;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Carbon;
 use App\Models\User;
 
 class TournamentsController extends Controller
@@ -27,7 +28,10 @@ class TournamentsController extends Controller
 
         try {
             $game_id = $request->get('game_id');
-            $tournaments = Tournaments::where('game_id', $game_id)->get();
+            $tournamentsToday = Tournaments::where('game_id', $game_id)->whereDate('start_time', Carbon::today())->get();
+            $tournamentsTomorrow = Tournaments::where('game_id', $game_id)->whereDate('start_time', Carbon::tomorrow())->get();
+            $tournamentsEnded = Tournaments::where('game_id', $game_id)->where('ended', 1)->get();
+            $tournaments = ['tournamentsToday' => $tournamentsToday, 'tournamentsTomorrow' => $tournamentsTomorrow, 'tournamentsEnded' => $tournamentsEnded];
             if (count($tournaments) < 1) throw new \Exception("Нет турниров");
             return response()->json(['message' => 'Турниры найдены', 'tournaments' => $tournaments, 'status' => 'success'], 200);
         } catch (\Exception $e) {
