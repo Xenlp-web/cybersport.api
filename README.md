@@ -14,82 +14,82 @@
 **Регистрация** - POST https://domen.com/api/register (Аргументы: nickname, email, password, password_confirm, region_id)
 - Возвращает {message, status, token, user_data}
 
-**Получить информацию о текущем пользователе** - GET https://domen.com/api/getCurrentUserInfo **AUTH** (Аргументов нет)
+**Получить информацию о текущем пользователе** - GET https://domen.com/api/get-current-user-info **AUTH** (Аргументов нет)
 - Возвращает {message, status, user}
 - user - объект с данными пользователя
 
-**Получить информацию о пользователе по id** - GET https://domen.com/api/getUserInfo () (Аргументы: user_id)
+**Получить информацию о пользователе по id** - GET https://domen.com/api/get-user-info () (Аргументы: user_id)
 - Возвращает {message, status, user}
 - user - объект с данными пользователя
 
-**Редактировать информацию пользователя администратором** - POST https://domen.com/api/changeUserInfoByAdmin **AUTH ADMIN** (Аргументы: user_id, user_info)
+**Редактировать информацию пользователя администратором** - POST https://domen.com/api/change-user-info-by-admin **AUTH ADMIN** (Аргументы: user_id, user_info)
 - Возвращает {message, status}
 - user_id - id пользователя
 - user_info - объект с данными пользователя. Пример {nickname: 'newNickname', email: 'newEmail'}
 
-**Редактировать информацию пользователя** - POST https://domen.com/api/changeUserInfo **AUTH** (Аргументы: user_info)
+**Редактировать информацию пользователя** - POST https://domen.com/api/change-user-info **AUTH** (Аргументы: user_info)
 - Возвращает {message, status}
 - user_info - объект с данными пользователя. Пример {nickname: 'newNickname', email: 'newEmail'}
 
-**Записаться на турнир** - POST https://domen.com/api/joinTournament **AUTH** (Аргументы: tournament_id, game_id)
+**Записаться на турнир** - POST https://domen.com/api/join-tournament **AUTH** (Аргументы: tournament_id, game_id)
 - Возвращает {message, status}
 - tournament_id - id турнира
 - game_id - id игры
 
-**Отменить запись на турнир** - POST https://domen.com/api/cancelTournamentParticipation **AUTH** (Аргументы: tournament_id, game_id)
+**Отменить запись на турнир** - POST https://domen.com/api/cancel-tournament-participation **AUTH** (Аргументы: tournament_id, game_id)
 - Возвращает {message, status}
 - tournament_id - id турнира
 - game_id - id игры
 
-**Добавить информацию для игры** - POST https://domen.com/api/addGameInfo **AUTH** (Аргументы: game_id, game_info)
+**Добавить информацию для игры** - POST https://domen.com/api/add-game-info **AUTH** (Аргументы: game_id, game_info)
 - Возвращает {message, status}
 - game_id - id игры
 - game_info - массив с данными для игры
 
-**Отправить новый код подтверждения** - POST https://domen.com/api/sendNewEmailConfirmationCode **AUTH** (Аргументов нет)
+**Отправить новый код подтверждения** - POST https://domen.com/api/send-new-email-confirmation-code **AUTH** (Аргументов нет)
 - Возвращает {message, status}
 
-**Подтвердить email** - POST https://domen.com/api/confirmEmail **AUTH** (Аргументы: confirmation_code)
+**Подтвердить email** - POST https://domen.com/api/confirm-email **AUTH** (Аргументы: confirmation_code)
 - Возвращает {message, status}
 - confirmation_code - код подтверждения введенный пользователем
 
-**Загрузить аватарку** - POST https://domen.com/api/uploadAvatar **AUTH** (Аргументы: file)
+**Загрузить аватарку** - POST https://domen.com/api/upload-avatar **AUTH** (Аргументы: file)
 - Возвращает {message, status}
 - file - изображение
 ____
 
 ## Игры
-**Получить список игр** - GET https://domen.com/api/getAllGames (Нет аргументов)
+**Получить список игр** - GET https://domen.com/api/get-all-games (Нет аргументов)
 - Возвращает {message, status, games}.
 - games - массив с объектами игр (id, name, image, active).
 ____
 
 ## Цены
-**Получить цену на билеты** - GET https://domen.com/api/getTicketPrice (Необязательный аргумент **count**. Если указан - выдаст цену на **count** шт. билетов)
+**Получить цену на билеты** - GET https://domen.com/api/get-ticket-price (Необязательный аргумент **count**. Если указан - выдаст цену на **count** шт. билетов)
 - Возвращает {message, status, price}.
 - price - цена
 ____
 
 ## Чат
-**Получить последние 100 сообщений из глобального чата** - GET https://domen.com/api/getGlobalChatMessages (Нет аргументов)
+**Получить последние 100 сообщений из глобального чата** - GET https://domen.com/api/get-global-chat-messages (Нет аргументов)
 - Возвращает {message, status, **messages**}
 - messages - массив с сообщениями в чате
 
-**Отправить сообщение в глобальный чат** - POST https://domen.com/api/sendMessageToGlobalChat **AUTH** (Аргументы: message)
+**Отправить сообщение в глобальный чат** - POST https://domen.com/api/send-message-to-global-chat **AUTH** (Аргументы: message)
 - Возвращает {message, status}
 ____
 
 ## Турниры
-**Получить турниры для определенной игры** - GET https://domen.com/api/getTournamentsByGame (Аргументы: game_id)
+**Получить турниры для определенной игры** - GET https://domen.com/api/get-tournaments-by-game (Аргументы: game_id)
 - Возвращает {message, status, tournaments}
 - tournaments - массив турниров, содержащий в себе еще 3 массива: tournamentsToday, tournamentsTommorrow, tournamentsEnded
 
-**Добавить новый турнир вручную будучи администратором** - POST https://domen.com/api/createTounamentByAdmin **AUTH ADMIN** (Аргументы: new_tournament, options, game_id)
+**Добавить новый турнир вручную будучи администратором** - POST https://domen.com/api/create-tounament-by-admin **AUTH ADMIN** (Аргументы: new_tournament, options, game_id)
 - Возвращает {message, status}
 - new_tournament - объект, содержащий title, game_id, tickets, img, start_time, region
 - options - объект, содержащий дополнительную информацию о турнире, основываясь на игре (Например для pubg: map, mode, pov, max_players, winners, placement_award, kill_award, mvp_award, lobby_pass)
 
-**Добавить настройки для автотурнира** POST https://domen.com/api/saveAutoTournOptions **AUTH ADMIN** (Аргументы: game_id, options)
+**Добавить настройки для автотурнира** POST https://domen.com/api/save-auto-tourn-options **AUTH ADMIN** (Аргументы: game_id, options)
 - Возвращает {message, status}
 - game_id - id игры, для которой применяются настройки
 - options - многомерный массив. 
@@ -99,29 +99,29 @@ ____
         schedule_options => [day_of_week(Цифра от 0 до 6, где 0 это воскресенье), time(формат 24ч), region] 
     ]
 
-**Редактировать турнир** POST https://domen.com/api/editTournamentInfo **AUTH ADMIN** (Аргументы: tournament_id, game_id, tournament_common_info, tournament_info_by_game)
+**Редактировать турнир** POST https://domen.com/api/edit-tournament-info **AUTH ADMIN** (Аргументы: tournament_id, game_id, tournament_common_info, tournament_info_by_game)
 - Возвращает {message, status}
 - tournament_id - id турнира
 - game_id - id игры
 - tournament_common_info - массив с общей информацией для турниров (пример: title, game_id, tickets, img, start_time, ended, important, stream, region, lobby_id, lobby_pass)
 - tournament_info_by_game - массив с информацией для турнира по конкретной игре (пример с pubg: tournament_id, map, mode, pov, current_players, max_players, winners, placement_award, kill_award, mvp_award)
 
-**Получить информацию для входа в лобби** - POST https://domen.com/api/getLobbyInfo **AUTH** (Аргументы: tournament_id)
+**Получить информацию для входа в лобби** - POST https://domen.com/api/get-lobby-info **AUTH** (Аргументы: tournament_id)
 - Возвращает {message, lobby_info, status} lobby_info - массив с данными для входа
 - tournament_id - id турнира
 
-**Добавить результаты турнира** - POST https://domen.com/api/saveResult **AUTH ADMIN** (Аргументы: tournament_id, tournament_results)
+**Добавить результаты турнира** - POST https://domen.com/api/save-result **AUTH ADMIN** (Аргументы: tournament_id, tournament_results)
 - Возвращает {message, status}
 - tournament_id - id турнира
 - tournament_results - массив, содержащий массивы с результатами игроков. Пример для PUBG: [user_id, placement (занятое место), mvp(является ли MVP, может быть 1 или 0), kills, deaths].
 
-**Получить список всех стримов** - GET https://domen.com/api/getAllStreams (Аргументов нет)
+**Получить список всех стримов** - GET https://domen.com/api/get-all-streams (Аргументов нет)
 - Возвращает {message, streams, status} lobby_info - массив с данными для входа
 - streams - массив объектов, содержит title (название турнира), stream (ссылка на стрим)
 ____
 
 ## Статистика
-**Получить статистику игроков** - GET https://domen.com/api/getStatisticForPlayers (Аргументы: game_id, stat_item, period = 'all')
+**Получить статистику игроков** - GET https://domen.com/api/get-statistic-for-players (Аргументы: game_id, stat_item, period = 'all')
 - Возвращает {message, status, statistic}
 - game_id - id игры
 - stat_item - критерий выбора статистики (для pubg можно выбрать: earnings, kills, placements, tournaments)
@@ -131,6 +131,6 @@ ____
 ____
 
 ## Регионы
-**Получить список всех регионов** - GET https://domen.com/api/getAllRegions (Аргументов нет)
+**Получить список всех регионов** - GET https://domen.com/api/get-all-regions (Аргументов нет)
 - Возвращает {message, status, regions}
 - regions - массив объектов регионов. Пример объекта: {"id": 1, "region": "ru"}
