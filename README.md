@@ -82,7 +82,7 @@ ____
 ## Турниры
 **Получить турниры для определенной игры** - GET https://domen.com/api/get-tournaments-by-game (Аргументы: game_id)
 - Возвращает {message, status, tournaments}
-- tournaments - массив турниров, содержащий в себе еще 3 массива: tournamentsToday, tournamentsTommorrow, tournamentsEnded
+- tournaments - массив турниров, содержащий в себе еще 3 массива: tournamentsToday, tournamentsTommorrow, tournamentsEnded в которых есть поле participation (показывает участвует ли пользователь в турнире или нет)
 
 **Добавить новый турнир вручную будучи администратором** - POST https://domen.com/api/create-tounament-by-admin **AUTH ADMIN** (Аргументы: new_tournament, options, game_id)
 - Возвращает {message, status}
