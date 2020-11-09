@@ -119,7 +119,7 @@ ____
 - Возвращает {message, streams, status} lobby_info - массив с данными для входа
 - streams - массив объектов, содержит title (название турнира), stream (ссылка на стрим)
 
-**Получить список турниров в админке** - GET https://domen.com/api/get-tournaments-for-admin **AUTH ADMIN** (Аргументов нет)
+**Получить список турниров в админке** - GET https://domen.com/api/get-tournaments-for-admin **AUTH ADMIN** (Аргументы (все не обязательные): tournament_id, tournament_title, start_date, start_time)
 - Возвращает {message, status, tournaments}
 
 **Получить данные для турнира в админке** - GET https://domen.com/api/get-tournaments-option-for-admin **AUTH ADMIN** (Аргументы: tournament_id)
