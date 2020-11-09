@@ -118,6 +118,12 @@ ____
 **Получить список всех стримов** - GET https://domen.com/api/get-all-streams (Аргументов нет)
 - Возвращает {message, streams, status} lobby_info - массив с данными для входа
 - streams - массив объектов, содержит title (название турнира), stream (ссылка на стрим)
+
+**Получить список турниров в админке** - GET https://domen.com/api/get-tournaments-for-admin **AUTH ADMIN** (Аргументов нет)
+- Возвращает {message, status, tournaments}
+
+**Получить данные для турнира в админке** - GET https://domen.com/api/get-tournaments-option-for-admin **AUTH ADMIN** (Аргументы: tournament_id)
+- Возвращает {message, status, tournamentOption}
 ____
 
 ## Статистика
