@@ -124,6 +124,9 @@ ____
 
 **Получить данные для турнира в админке** - GET https://domen.com/api/get-tournaments-option-for-admin **AUTH ADMIN** (Аргументы: tournament_id)
 - Возвращает {message, status, tournamentOption}
+
+**Получить списко участников турнира** - GET https://domen.com/api/get-participants (Аргументы: tournament_id)
+- Возвращает {message, status, users}
 ____
 
 ## Статистика
