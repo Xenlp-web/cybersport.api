@@ -411,6 +411,25 @@ class TournamentsController extends Controller
 
     }
 
+    public function getParticipants(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'tournament_id' => 'required|integer'
+        ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+
+        $tournamentId = $request->get('tournament_id');
+        try {
+            $users = DB::table('tournaments_and_users')->join('users', 'users.id', '=', 'tournaments_and_users.user_id')->select('users.id', 'users.nickname')->where('tournament_id', $tournamentId)->get();
+            if ($users->isEmpty()) throw new \Exception("Участники не найдены");
+            return response()->json(['message' => 'Участники турнира найдены', 'status' => 'success', 'users' => $users]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
+
 
     private static function createNewTournament(array $newTournament, array $newTournamentOptions, string $gameSlug) {
         $tournamentsInfoTable = $gameSlug.'_tournaments_info';
