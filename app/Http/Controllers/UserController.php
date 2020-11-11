@@ -83,19 +83,19 @@ class UserController extends Controller
             $tournamentTickets = Tournaments::select('tickets')->where('id', $tournamentId)->where('ended', '0')->firstOrFail();
             $user = Auth::user();
 
-            if ($user->tickets < $tournamentTickets) throw new \Exception("Недостаточно билетов");
+            if ($user->tickets < $tournamentTickets->tickets) throw new \Exception("Недостаточно билетов");
 
             DB::table('tournaments_and_users')->insert(['user_id' => $userId, 'tournament_id' => $tournamentId]);
             $game = GamesController::getGameById($gameId);
             $gameSlug = $game->slug;
             $tournInfoTable = $gameSlug.'_tournaments_info';
 
-            $players = DB::table($tournInfoTable)->select('current_players', 'max_players')->where('tournament_id', $tournamentId)->firstOrFail();
+            $players = DB::table($tournInfoTable)->select('current_players', 'max_players')->where('tournament_id', $tournamentId)->first();
             if ($players->current_players >= $players->max_players) throw new \Exception("Недостаточно мест");
 
             DB::table($tournInfoTable)->where('tournament_id', $tournamentId)->update(['current_players' => $players->current_players + 1]);
 
-            $user->tickets = $user->tickets - $tournamentTickets;
+            $user->tickets = $user->tickets - $tournamentTickets->tickets;
             $user->save();
             return response()->json(['message' => 'Запись на турнир прошла успешно', 'status' => 'success'], 200);
         } catch (\Exception $e) {
@@ -122,10 +122,10 @@ class UserController extends Controller
             $game = GamesController::getGameById($gameId);
             $gameSlug = $game->slug;
             $tournInfoTable = $gameSlug.'_tournaments_info';
-            $players = DB::table($tournInfoTable)->pluck('current_players')->where('tournament_id', $tournamentId);
+            $players = DB::table($tournInfoTable)->select('current_players')->where('tournament_id', $tournamentId)->first();
             DB::table($tournInfoTable)->where('tournament_id', $tournamentId)->update(['current_players' => $players->current_players - 1]);
             $user = Auth::user();
-            $user->tickets = $user->tickets + $tournamentTickets;
+            $user->tickets = $user->tickets + $tournamentTickets->tickets;
             $user->save();
             return response()->json(['message' => 'Участие в турнире отменено', 'status' => 'success'], 200);
         } catch (\Exception $e) {

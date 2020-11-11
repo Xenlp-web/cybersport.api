@@ -10,6 +10,7 @@ use App\Exceptions\ValidationException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class TournamentsController extends Controller
 {
@@ -26,12 +27,44 @@ class TournamentsController extends Controller
             $this->failedValidation($validator);
         }
 
+
+
         try {
             $game_id = $request->get('game_id');
-            $tournamentsToday = Tournaments::where('game_id', $game_id)->whereDate('start_time', Carbon::today())->get();
-            $tournamentsTomorrow = Tournaments::where('game_id', $game_id)->whereDate('start_time', Carbon::tomorrow())->get();
-            $tournamentsEnded = Tournaments::where('game_id', $game_id)->where('ended', 1)->get();
-            $tournaments = ['tournamentsToday' => $tournamentsToday, 'tournamentsTomorrow' => $tournamentsTomorrow, 'tournamentsEnded' => $tournamentsEnded];
+            $game = GamesController::getGameById($game_id);
+            $gameSlug = $game->slug;
+            $tableForGame = $gameSlug.'_tournaments_info';
+            $tournamentsToday = DB::table('tournaments')
+                ->join($tableForGame, $tableForGame.'.tournament_id', '=', 'tournaments.id')
+                ->leftJoin('tournaments_and_users', function ($join) {
+                    $userId = auth('api')->user()->id;
+                    $join->on('tournaments_and_users.tournament_id', '=', 'tournaments.id')
+                    ->where('tournaments_and_users.user_id', $userId);
+                })
+                ->select('tournaments.*', $tableForGame.'.*', 'tournaments_and_users.user_id as participation')
+                ->where('game_id', $game_id)
+                ->whereDate('start_time', Carbon::today())
+                ->get();
+            $tournamentsTomorrow = DB::table('tournaments')
+                ->join($tableForGame, $tableForGame.'.tournament_id', '=', 'tournaments.id')
+                ->leftJoin('tournaments_and_users', function ($join) {
+                    $userId = auth('api')->user()->id;
+                    $join->on('tournaments_and_users.tournament_id', '=', 'tournaments.id')
+                    ->where('tournaments_and_users.user_id', $userId);
+                })
+                ->select('tournaments.*', $tableForGame.'.*', 'tournaments_and_users.user_id as participation')
+                ->where('game_id', $game_id)
+                ->whereDate('start_time', Carbon::tomorrow())
+                ->get();
+            $tournamentsEnded = DB::table('tournaments')
+                ->join($tableForGame, $tableForGame.'.tournament_id', '=', 'tournaments.id')
+                ->where('game_id', $game_id)->where('ended', 1)
+                ->get();
+            $tournaments = [
+                'tournamentsToday' => $tournamentsToday,
+                'tournamentsTomorrow' => $tournamentsTomorrow,
+                'tournamentsEnded' => $tournamentsEnded
+            ];
             if (count($tournaments) < 1) throw new \Exception("Нет турниров");
             return response()->json(['message' => 'Турниры найдены', 'tournaments' => $tournaments, 'status' => 'success'], 200);
         } catch (\Exception $e) {
@@ -42,8 +75,7 @@ class TournamentsController extends Controller
     public function createTournamentByAdmin(Request $request) {
         $validator = Validator::make($request->all(), [
             'new_tournament' => 'required|array',
-            'options' => 'required|array',
-            'game_id' => 'required|integer'
+            'options' => 'required|array'
         ]);
 
         if ($validator->fails()) {
@@ -308,6 +340,76 @@ class TournamentsController extends Controller
         }
     }
 
+    public function getAllTournamentsForAdmin(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'tournament_id' => 'integer',
+            'tournament_title' => 'string',
+            'start_date' => 'date',
+            'start_time' => 'string'
+        ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+
+        try {
+            $whereClause = array();
+            $tournaments = DB::table('tournaments');
+
+            if ($request->has('tournament_id')) {
+                $tournamentId = $request->get('tournament_id');
+                $tournaments = $tournaments->where('id', $tournamentId);
+            }
+            if ($request->has('tournament_title')) {
+                $tournamentTitle = $request->get('tournament_title');
+                $tournaments = $tournaments->where('title', 'like', $tournamentTitle);
+            }
+
+            if ($request->has('start_date')) {
+                $startDate = $request->get('start_date');
+                $tournaments = $tournaments->whereDate('start_time', $startDate);
+            }
+
+            if ($request->has('start_time')) {
+                $startTime = $request->get('start_time');
+                $tournaments = $tournaments->whereTime('start_time', $startTime.':00');
+            }
+
+            $tournaments = $tournaments->get();
+
+            if ($tournaments->isEmpty()) throw new \Exception("Турниры не найдены");
+            return response()->json(['message' => 'Турниры получены', 'status' => 'success', 'tournaments' => $tournaments]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
+
+    public function getTournamentsOptionForAdmin(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'tournament_id' => 'required|integer'
+        ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+
+        $tournamentId = $request->get('tournament_id');
+        try {
+            $gameId = Tournaments::select('game_id')->where('id', $tournamentId)->firstOrFail()->game_id;
+            $game = GamesController::getGameById($gameId);
+            $gameSlug = $game->slug;
+            $tableForGame = $gameSlug.'_tournaments_info';
+            $tournamentInfo = DB::table('tournaments')
+                ->join($tableForGame, $tableForGame.'.tournament_id', '=', 'tournaments.id')
+                ->select('tournaments.*', $tableForGame.'.*')
+                ->where('tournaments.id', $tournamentId)
+                ->get();
+            return response()->json(['message' => 'Данные для турнира получены', 'status' => 'success', 'tournamentInfo' => $tournamentInfo]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+
+    }
 
 
     private static function createNewTournament(array $newTournament, array $newTournamentOptions, string $gameSlug) {

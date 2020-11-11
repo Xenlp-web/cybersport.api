@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\GamesController;
+use Illuminate\Support\Facades\Auth;
 
 class GameInfoFullness
 {
