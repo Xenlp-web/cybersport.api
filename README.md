@@ -127,6 +127,9 @@ ____
 
 **Получить списко участников турнира** - GET https://domen.com/api/get-participants (Аргументы: tournament_id)
 - Возвращает {message, status, users}
+
+**Удалить турнир** - DELETE https://domen.com/api/remove-tournament **AUTH ADMIN** (Аргументы: tournament_id, game_id)
+- Возвращает {message, status}
 ____
 
 ## Статистика
