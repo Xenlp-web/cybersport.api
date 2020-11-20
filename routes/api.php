@@ -38,6 +38,7 @@ Route::get('get-all-streams', 'App\Http\Controllers\TournamentsController@getAll
 Route::middleware('auth:api', 'admin_rights')->get('get-tournaments-for-admin', 'App\Http\Controllers\TournamentsController@getAllTournamentsForAdmin');
 Route::middleware('auth:api', 'admin_rights')->get('get-tournaments-option-for-admin', 'App\Http\Controllers\TournamentsController@getTournamentsOptionForAdmin');
 Route::get('get-participants', 'App\Http\Controllers\TournamentsController@getParticipants');
+Route::middleware('auth:api', 'admin_rights')->delete('remove-tournament', 'App\Http\Controllers\TournamentsController@removeTournament');
 
 // Statistic
 Route::get('get-statistic-for-players', 'App\Http\Controllers\StatisticController@getStatisticForPlayers');

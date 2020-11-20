@@ -96,6 +96,31 @@ class TournamentsController extends Controller
         }
     }
 
+    public function removeTournament(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'tournament_id' => 'required|integer',
+            'game_id' => 'required|integer'
+        ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+
+        $tournamentId = $request->get('tournament_id');
+        $gameId = $request->get('game_id');
+        try {
+            $game = GamesController::getGameById($gameId);
+            $gameSlug = $game->slug;
+            $tableForGame = $gameSlug.'_tournaments_info';
+
+            Tournaments::where('id', $tournamentId)->delete();
+            DB::table($tableForGame)->where('tournament_id', $tournamentId)->delete();
+            return response()->json(['message' => 'Турнир успешно удален', 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
+
     public function saveAutoTournOptions(Request $request) {
         $validator = Validator::make($request->all(), [
             'options' => 'required|array',
@@ -191,8 +216,8 @@ class TournamentsController extends Controller
         $validator = Validator::make($request->all(), [
             'tournament_id' => 'required|integer',
             'game_id' => 'required|integer',
-            'tournament_common_info' => 'required|array',
-            'tournament_info_by_game' => 'required|array'
+            'tournament_common_info' => 'array',
+            'tournament_info_by_game' => 'array'
         ]);
 
         if ($validator->fails()) {
@@ -201,8 +226,8 @@ class TournamentsController extends Controller
 
         $tournamentId = $request->get('tournament_id');
         $gameId = $request->get('game_id');
-        $tournamentCommonInfo = $request->get('tournament_common_info');
-        $tournamentInfoByGame = $request->get('tournament_info_by_game');
+        if ($request->has('tournament_common_info')) $tournamentCommonInfo = $request->get('tournament_common_info');
+        if ($request->has('tournament_info_by_game')) $tournamentInfoByGame = $request->get('tournament_info_by_game');
 
         try {
             $game = GamesController::getGameById($gameId);
@@ -210,10 +235,13 @@ class TournamentsController extends Controller
             $tableForGame = $gameSlug.'_tournaments_info';
             $tournamentInfoByGame['tournament_id'] = $tournamentId;
 
-            $tournament = Tournaments::where('id', $tournamentId);
-            $tournament->update($tournamentCommonInfo);
+            if (isset($tournamentCommonInfo)) {
+                $tournament = Tournaments::where('id', $tournamentId);
+                $tournament->update($tournamentCommonInfo);
+            }
 
-            DB::table($tableForGame)->where('tournament_id', $tournamentId)->update($tournamentCommonInfo);
+            if (isset($tournamentInfoByGame)) DB::table($tableForGame)->where('tournament_id', $tournamentId)->update($tournamentInfoByGame);
+
             return response()->json(['message' => 'Изменения успешно сохранены', 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
@@ -353,7 +381,6 @@ class TournamentsController extends Controller
         }
 
         try {
-            $whereClause = array();
             $tournaments = DB::table('tournaments');
 
             if ($request->has('tournament_id')) {
