@@ -39,15 +39,15 @@ class StatisticController extends Controller
 
             switch ($period) {
                 case 'day':
-                    $statistic = DB::table($statTable)->join('users', 'users.id', '=', $statTable.'.user_id')->select('users.id as user_id', 'users.nickname', DB::raw("SUM($statItem) as $statItem"))->where(DB::raw('DAY(created_at)'), date('j', time()))->where(DB::raw('MONTH(created_at)'), date('n', time()))->where(DB::raw('YEAR(created_at)'), date('Y', time()))->get();
+                    $statistic = DB::table($statTable)->join('users', 'users.id', '=', $statTable.'.user_id')->select('users.id as user_id', 'users.nickname', DB::raw("SUM($statItem) as $statItem"))->where(DB::raw('DAY('.$statTable.'.created_at)'), date('j', time()))->where(DB::raw('MONTH('.$statTable.'.created_at)'), date('n', time()))->where(DB::raw('YEAR('.$statTable.'.created_at)'), date('Y', time()))->get();
                     break;
 
                 case 'week':
-                    $statistic = DB::table($statTable)->join('users', 'users.id', '=', $statTable.'.user_id')->select('users.id as user_id', 'users.nickname', DB::raw("SUM($statItem) as $statItem"))->where(DB::raw('WEEK(created_at)'), date('W', time()))->where(DB::raw('YEAR(created_at)'), date('Y', time()))->get();
+                    $statistic = DB::table($statTable)->join('users', 'users.id', '=', $statTable.'.user_id')->select('users.id as user_id', 'users.nickname', DB::raw("SUM($statItem) as $statItem"))->where(DB::raw('WEEK('.$statTable.'.created_at)'), date('W', time()))->where(DB::raw('YEAR('.$statTable.'.created_at)'), date('Y', time()))->get();
                     break;
 
                 case 'month':
-                    $statistic = DB::table($statTable)->join('users', 'users.id', '=', $statTable.'.user_id')->select('users.id as user_id', 'users.nickname', DB::raw("SUM($statItem) as $statItem"))->where(DB::raw('MONTH(created_at)'), date('n', time()))->where(DB::raw('YEAR(created_at)'), date('Y', time()))->get();
+                    $statistic = DB::table($statTable)->join('users', 'users.id', '=', $statTable.'.user_id')->select('users.id as user_id', 'users.nickname', DB::raw("SUM($statItem) as $statItem"))->where(DB::raw('MONTH('.$statTable.'.created_at)'), date('n', time()))->where(DB::raw('YEAR('.$statTable.'.created_at)'), date('Y', time()))->get();
                     break;
 
                 default:
@@ -57,6 +57,7 @@ class StatisticController extends Controller
 
             if (!isset($statistic)) throw new \Exception("Ошибка получения статистики");
 
+            if ($statistic[0]->user_id == null) throw new \Exception("Нет данных для получения статистики");
 
             return response()->json(['message' => 'Статистика получена', 'statistic' => $statistic, 'status' => 'success'], 200);
         } catch (\Exception $e) {
