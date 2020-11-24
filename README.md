@@ -130,6 +130,9 @@ ____
 
 **Удалить турнир** - DELETE https://domen.com/api/remove-tournament **AUTH ADMIN** (Аргументы: tournament_id, game_id)
 - Возвращает {message, status}
+
+**Получить информацию о турнире** - GET https://domen.com/api/get-tournament-info (Аргументы: tournament_id, game_id)
+- Взвращает {message, status, tournament}
 ____
 
 ## Статистика
