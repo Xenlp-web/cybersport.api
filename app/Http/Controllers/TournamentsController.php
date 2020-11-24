@@ -283,7 +283,7 @@ class TournamentsController extends Controller
             // Считаем цену за участие в турнире
             $ticketsForTournament = $tournament->tickets;
             $priceForTicket = DB::table('ticket_prices')->select('price')->where('count', 1)->first();
-            $totalPrice = $ticketsForTournament * $priceForTicket->price;
+            $totalPrice = $ticketsForTournament * $priceForTicket;
 
             // Находим таблицу с данными турнира для нужной игры
             $gameId = $tournament->game_id;
