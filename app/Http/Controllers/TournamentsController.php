@@ -27,8 +27,6 @@ class TournamentsController extends Controller
             $this->failedValidation($validator);
         }
 
-
-
         try {
             $game_id = $request->get('game_id');
             $game = GamesController::getGameById($game_id);
@@ -456,6 +454,41 @@ class TournamentsController extends Controller
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
         }
     }
+
+    public function getTournamentInfo(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'game_id' => 'required|integer',
+            'tournament_id' => 'required|integer'
+        ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+
+        try {
+            $game_id = $request->get('game_id');
+            $tournamentId = $request->get('tournament_id');
+            $game = GamesController::getGameById($game_id);
+            $gameSlug = $game->slug;
+            $tableForGame = $gameSlug.'_tournaments_info';
+            $tournament = DB::table('tournaments')
+                ->join($tableForGame, $tableForGame.'.tournament_id', '=', 'tournaments.id')
+                ->leftJoin('tournaments_and_users', function ($join) {
+                    $userId = auth('api')->user()->id;
+                    $join->on('tournaments_and_users.tournament_id', '=', 'tournaments.id')
+                    ->where('tournaments_and_users.user_id', $userId);
+                })
+                ->select('tournaments.*', $tableForGame.'.*', 'tournaments_and_users.user_id as participation')
+                ->where('tournaments.id', $tournamentId)
+                ->get();
+
+            if ($tournament->isEmpty()) throw new \Exception('Турнир не найден');
+            return response()->json(['message' => 'Турниры найдены', 'tournament' => $tournament, 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
+
 
 
     private static function createNewTournament(array $newTournament, array $newTournamentOptions, string $gameSlug) {
