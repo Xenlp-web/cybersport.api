@@ -231,4 +231,54 @@ class UserController extends Controller
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
         }
     }
+
+    public function getRating(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'game_id' => 'required|integer',
+            'user_id' => 'required|integer'
+        ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+
+        $gameId = $request->get('game_id');
+        $userId = $request->get('user_id');
+
+        try {
+            $game = GamesController::getGameById($gameId);
+            $gameSlug = $game->slug;
+            $infoTable = $gameSlug.'_info';
+            $rating = DB::table($infoTable)->select('rating')->where('user_id', $userId)->first();
+            return response()->json(['message' => 'Рейтинг получен', 'rating' => $rating->rating, 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
+
+    public function useReferalCode(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'referal_code' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+
+        $referalCode = $request->get('referal_code');
+
+        try {
+            $user = User::where('referal_code', $referalCode)->firstOrFail();
+            $user->tickets += 1;
+            $user->save();
+            $transfer = new TransferController;
+            $requestForTransfer = new Request();
+            $requestForTransfer->setMethod('POST');
+            $requestForTransfer->replace(['transfer_type' => 'income_tickets_referal', 'amount' => 1, 'user_id' => $user->id]);
+            $transfer->saveNewTransfer($requestForTransfer);
+            return response()->json(['message' => 'Код активирован', 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
 }

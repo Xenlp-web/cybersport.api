@@ -66,11 +66,11 @@ class StatisticController extends Controller
     }
 
     public static function saveStatistic(array $statistic, int $gameId) {
-        (string) $statTable = $this->getStatTable($gameId);
+        (string) $statTable = self::getStatTable($gameId);
         DB::table($statTable)->insert($statistic);
     }
 
-    protected function getStatTable(int $gameId) {
+    protected static function getStatTable(int $gameId) {
         $game = GamesController::getGameById($gameId);
         if (!$game) return false;
         $gameSlug = $game->slug;

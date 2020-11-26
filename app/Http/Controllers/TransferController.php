@@ -15,13 +15,14 @@ class TransferController extends Controller
     }
 
     protected $transferTypes = [
-        'income_coins', 'spend_coins', 'income_tickets', 'spend_tickets'
+        'income_coins', 'spend_coins', 'income_tickets', 'spend_tickets', 'income_tickets_referal'
     ];
 
-    public function saveNewTransfer(Request $request) {
+    public function saveNewTransfer($request) {
         $validator = Validator::make($request->all(), [
-            'transfer_type' => 'required|string|in:'.$this->transferTypes,
-            'amount' => 'required|integer'
+            'transfer_type' => 'required|string|in:'.implode(',', $this->transferTypes),
+            'amount' => 'required|integer',
+            'user_id' => 'integer'
         ]);
 
         if ($validator->fails()) {
@@ -30,7 +31,11 @@ class TransferController extends Controller
 
         $transferType = $request->get('transfer_type');
         $amount = $request->get('amount');
-        $userId = Auth::id();
+        if ($request->has('user_id')) {
+            $userId = $request->get('user_id');
+        } else {
+            $userId = Auth::id();
+        }
 
         try {
             DB::table('users_transfers')->insert(['user_id' => $userId, 'transfer_type' => $transferType, 'amount' => $amount]);
