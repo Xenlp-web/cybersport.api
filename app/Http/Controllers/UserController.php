@@ -30,7 +30,7 @@ class UserController extends Controller
 
         $query = $request->get('query');
         try {
-            $user = User::where('id', $query)->orWhere('nickname', 'like', $query.'%')->firstOrFail();
+            $user = User::where('id', $query)->orWhere('nickname', 'like', $query.'%')->orWhere('email', 'like', $query.'%')->firstOrFail();
             return response()->json(['message' => 'Пользователь найден', 'user' => $user, 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
@@ -277,6 +277,29 @@ class UserController extends Controller
             $requestForTransfer->replace(['transfer_type' => 'income_tickets_referal', 'amount' => 1, 'user_id' => $user->id]);
             $transfer->saveNewTransfer($requestForTransfer);
             return response()->json(['message' => 'Код активирован', 'status' => 'success'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+        }
+    }
+
+    public function getGameInfo(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'game_id' => 'required|integer',
+            'user_id' => 'required|integer'
+        ]);
+
+        if ($validator->fails()) {
+            $this->failedValidation($validator);
+        }
+
+        $userId = $request->get('user_id');
+        $gameId = $request->get('game_id');
+        try {
+            $game = GamesController::getGameById($gameId);
+            $gameSlug = $game->slug;
+            $tableName = $gameSlug . '_info';
+            $gameInfo = DB::table($tableName)->where('user_id', $userId)->first();
+            return response()->json(['message' => 'Информация успешно получена', 'game_info' => $gameInfo, 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
         }

@@ -200,7 +200,7 @@ class TournamentsController extends Controller
                 'region' => $region
             ];
 
-            $options['lobby_pass'] = substr(str_shuffle('123456789abcdefghijklmnpqrstuvwxyz'), 0, 8);
+            $newTournaments['lobby_pass'] = substr(str_shuffle('123456789abcdefghijklmnpqrstuvwxyz'), 0, 8);
             $options['map'] = $map;
 
             if (!self::createNewTournament($newTournament, $options, $gameSlug)) {
