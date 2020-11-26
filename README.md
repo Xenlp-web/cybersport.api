@@ -18,9 +18,10 @@
 - Возвращает {message, status, user}
 - user - объект с данными пользователя
 
-**Получить информацию о пользователе по id** - GET https://domen.com/api/get-user-info () (Аргументы: user_id)
+**Получить информацию о пользователе по id или нику** - GET https://domen.com/api/get-user-info () (Аргументы: query)
 - Возвращает {message, status, user}
 - user - объект с данными пользователя
+- query - ник либо id
 
 **Редактировать информацию пользователя администратором** - POST https://domen.com/api/change-user-info-by-admin **AUTH ADMIN** (Аргументы: user_id, user_info)
 - Возвращает {message, status}
