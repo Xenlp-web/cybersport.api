@@ -21,16 +21,16 @@ class UserController extends Controller
 
     public function getUserInfo(Request $request) {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|integer'
+            'query' => 'required'
         ]);
 
         if ($validator->fails()) {
             $this->failedValidation($validator);
         }
 
-        $userId = $request->get('user_id');
+        $query = $request->get('query');
         try {
-            $user = User::findOrFail($userId);
+            $user = User::where('id', $query)->orWhere('nickname', 'like', $query.'%')->firstOrFail();
             return response()->json(['message' => 'Пользователь найден', 'user' => $user, 'status' => 'success'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);

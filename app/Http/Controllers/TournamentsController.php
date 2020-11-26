@@ -353,7 +353,7 @@ class TournamentsController extends Controller
             $tournament->save();
             return response()->json(['message' => 'Результаты турнира успешно сохранены', 'status' => 'success'], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage(), 'line' => $e->getLine(), 'ad' => $tournament, 'status' => 'error'], 400);
+            return response()->json(['message' => $e->getMessage(), 'line' => $e->getLine(), 'status' => 'error'], 400);
         }
     }
 
