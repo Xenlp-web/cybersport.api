@@ -279,11 +279,11 @@ class TournamentsController extends Controller
         $tournamentResults = $request->get('tournament_results');
 
         try {
-            $tournament = Tournaments::findOrFail($tournamentId);
+            $tournament = Tournaments::where('id', $tournamentId)->firstOrFail();
             // Считаем цену за участие в турнире
-            $ticketsForTournament = $tournament->tickets;
+            $ticketsForTournament = intval($tournament->tickets);
             $priceForTicket = DB::table('ticket_prices')->select('price')->where('count', 1)->first();
-            $totalPrice = $ticketsForTournament * $priceForTicket;
+            $totalPrice = intval($tournament->tickets) * intval($priceForTicket->price);
 
             // Находим таблицу с данными турнира для нужной игры
             $gameId = $tournament->game_id;
@@ -302,8 +302,9 @@ class TournamentsController extends Controller
             $payment = $prizeFund/$winners;
 
             foreach ($tournamentResults as $result) {
-                $userId = $result['user_id'];
-                $placement = $result['placement'];
+
+                $userId = intval($result['user_id']);
+                $placement = intval($result['placement']);
                 $award = 0;
                 $rating = 0;
                 if ($placement <= $winners) {
@@ -311,22 +312,22 @@ class TournamentsController extends Controller
                     $rating += 75;
                 }
 
-                $mvp = $result['mvp'];
+                $mvp = intval($result['mvp']);
 
                 DB::table('tournaments_and_users')->where('tournament_id', $tournamentId)->where('user_id', $userId)->update([
                     'placement' => $placement,
                     'award' => $award,
                     'total_rating' => $rating,
-                    'mvp' -> $mvp
+                    'mvp' => $mvp
                 ]);
 
-                $user = User::find($userId);
-                $user->coins = $user->coins + $award;
+                $user = User::where('id', $userId)->firstOrFail();
+                $user->coins += $award;
                 $user->save();
 
                 if ($gameId == 1) {
-                    $kills = $result['kills'];
-                    $deaths = $result['deaths'];
+                    $kills = intval($result['kills']);
+                    $deaths = intval($result['deaths']);
                     if ($kills > 0) {
                         $rating += 25 * $kills;
                     }
@@ -352,7 +353,7 @@ class TournamentsController extends Controller
             $tournament->save();
             return response()->json(['message' => 'Результаты турнира успешно сохранены', 'status' => 'success'], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
+            return response()->json(['message' => $e->getMessage(), 'line' => $e->getLine(), 'ad' => $tournament, 'status' => 'error'], 400);
         }
     }
 

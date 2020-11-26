@@ -17,7 +17,7 @@ Route::middleware('auth:api')->post('send-new-email-confirmation-code', 'App\Htt
 Route::middleware('auth:api')->post('confirm-email', 'App\Http\Controllers\UserController@confirmEmail');
 Route::middleware('auth:api')->post('upload-avatar', 'App\Http\Controllers\UserController@uploadAvatar');
 Route::get('get-rating', 'App\Http\Controllers\UserController@getRating');
-Route::/* middleware('auth:api')-> */post('use-referal-code', 'App\Http\Controllers\UserController@useReferalCode');
+Route::middleware('auth:api')->post('use-referal-code', 'App\Http\Controllers\UserController@useReferalCode');
 
 // Games
 Route::get('get-all-games', 'App\Http\Controllers\GamesController@getAllGames');
@@ -40,7 +40,7 @@ Route::get('get-all-streams', 'App\Http\Controllers\TournamentsController@getAll
 Route::middleware('auth:api', 'admin_rights')->get('get-tournaments-for-admin', 'App\Http\Controllers\TournamentsController@getAllTournamentsForAdmin');
 Route::middleware('auth:api', 'admin_rights')->get('get-tournaments-option-for-admin', 'App\Http\Controllers\TournamentsController@getTournamentsOptionForAdmin');
 Route::get('get-participants', 'App\Http\Controllers\TournamentsController@getParticipants');
-Route::middleware('auth:api', 'admin_rights')->delete('remove-tournament', 'App\Http\Controllers\TournamentsController@removeTournament');
+Route::middleware('auth:api', 'admin_rights')->post('remove-tournament', 'App\Http\Controllers\TournamentsController@removeTournament');
 Route::get('get-tournament-info', 'App\Http\Controllers\TournamentsController@getTournamentInfo');
 
 // Statistic
