@@ -63,6 +63,9 @@
 
 **Активировать реферальный код** - POST https://domen.com/api/use-referal-code **AUTH** (Аргументы: referal_code)
 - Возвращает {message, status}
+
+**Получить информацию о игровом аккаунте** - GET https://domen.com/api/get-game-info (Аргументы: game_id, user_id)
+- Возвращает {message, status, game_info}
 ____
 
 ## Игры
