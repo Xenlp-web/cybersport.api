@@ -56,6 +56,12 @@
 **Загрузить аватарку** - POST https://domen.com/api/upload-avatar **AUTH** (Аргументы: file)
 - Возвращает {message, status}
 - file - изображение
+
+**Получить рейтинг для игры** - GET https://domen.com/api/get-rating (Аргументы: game_id, user_id)
+- Возвращает {message, status, rating}
+
+**Активировать реферальный код** - POST https://domen.com/api/use-referal-code **AUTH** (Аргументы: referal_code)
+- Возвращает {message, status}
 ____
 
 ## Игры
