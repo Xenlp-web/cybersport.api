@@ -16,6 +16,7 @@ Route::middleware('auth:api')->post('change-user-info', 'App\Http\Controllers\Us
 Route::middleware('auth:api')->post('send-new-email-confirmation-code', 'App\Http\Controllers\UserController@sendNewEmailConfirmationCode');
 Route::middleware('auth:api')->post('confirm-email', 'App\Http\Controllers\UserController@confirmEmail');
 Route::middleware('auth:api')->post('upload-avatar', 'App\Http\Controllers\UserController@uploadAvatar');
+Route::get('get-rating', 'App\Http\Controllers\UserController@getRating');
 
 // Games
 Route::get('get-all-games', 'App\Http\Controllers\GamesController@getAllGames');
