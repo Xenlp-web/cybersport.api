@@ -17,6 +17,7 @@ Route::middleware('auth:api')->post('send-new-email-confirmation-code', 'App\Htt
 Route::middleware('auth:api')->post('confirm-email', 'App\Http\Controllers\UserController@confirmEmail');
 Route::middleware('auth:api')->post('upload-avatar', 'App\Http\Controllers\UserController@uploadAvatar');
 Route::get('get-rating', 'App\Http\Controllers\UserController@getRating');
+Route::/* middleware('auth:api')-> */post('use-referal-code', 'App\Http\Controllers\UserController@useReferalCode');
 
 // Games
 Route::get('get-all-games', 'App\Http\Controllers\GamesController@getAllGames');
