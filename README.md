@@ -64,7 +64,7 @@
 **Активировать реферальный код** - POST https://domen.com/api/use-referal-code **AUTH** (Аргументы: referal_code)
 - Возвращает {message, status}
 
-**Получить информацию о игровом аккаунте** - GET https://domen.com/api/get-game-info (Аргументы: game_id, user_id)
+**Получить информацию о игровом аккаунте** - GET https://domen.com/api/get-game-info (Аргументы: game_id, user_id - необязательный)
 - Возвращает {message, status, game_info}
 ____
 
@@ -143,6 +143,9 @@ ____
 
 **Получить информацию о турнире** - GET https://domen.com/api/get-tournament-info (Аргументы: tournament_id, game_id)
 - Взвращает {message, status, tournament}
+
+**Получить список сыгранных турниов** - GET https://domen.com/api/get-user-tournaments **AUTH** (Аргументы: game_id)
+- Возвращает {message, status, tournaments}
 ____
 
 ## Статистика
